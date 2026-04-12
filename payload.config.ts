@@ -5,11 +5,11 @@ import { postgresAdapter } from "@payloadcms/db-postgres"
 import { lexicalEditor } from "@payloadcms/richtext-lexical"
 import sharp from "sharp"
 
-import { Users } from "./payload/collections/Users"
-import { Media } from "./payload/collections/Media"
-import { Categories } from "./payload/collections/Categories"
-import { Products } from "./payload/collections/Products"
-import { SiteContent } from "./payload/globals/SiteContent"
+import { Users } from "./payload/collections/Users.ts"
+import { Media } from "./payload/collections/Media.ts"
+import { Categories } from "./payload/collections/Categories.ts"
+import { Products } from "./payload/collections/Products.ts"
+import { SiteContent } from "./payload/globals/SiteContent.ts"
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
