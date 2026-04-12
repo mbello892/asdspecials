@@ -58,7 +58,7 @@ const INITIAL: Item[] = [
   },
 ]
 
-const fmt = (n: number) => `$ ${new Intl.NumberFormat("es-UY").format(n)}`
+const fmt = (n: number) => `$ ${new Intl.NumberFormat("es-AR").format(n)}`
 
 export function Cart() {
   const [items, setItems] = useState<Item[]>(INITIAL)
@@ -223,7 +223,7 @@ export function Cart() {
                   </span>
                 </div>
                 <p className="mt-1 text-right text-[11px] text-ink-dim">
-                  Precio final en UYU · hasta 6 cuotas sin interés
+                  Precio final en ARS · hasta 6 cuotas sin interés
                 </p>
 
                 <button
@@ -247,7 +247,7 @@ export function Cart() {
                 <ul className="mt-8 grid grid-cols-2 gap-4 border-t border-line-soft pt-6 text-[11px] text-ink-soft">
                   <li className="flex items-start gap-2">
                     <Truck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-moss" strokeWidth={1.8} />
-                    Envío cuidado a todo el país
+                    Envíos a toda Argentina*
                   </li>
                   <li className="flex items-start gap-2">
                     <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-moss" strokeWidth={1.8} />
@@ -264,6 +264,9 @@ export function Cart() {
                     Sin cuenta obligatoria
                   </li>
                 </ul>
+                <p className="mt-3 text-[10px] text-ink-dim">
+                  *Excepto Tierra del Fuego. Coordinamos envío por Correo Argentino, Andreani u OCA.
+                </p>
               </div>
 
               {/* WhatsApp escape hatch */}

@@ -23,8 +23,8 @@ export function Footer() {
               asd<span className="italic text-moss">specials</span>
             </p>
             <p className="mt-4 max-w-sm text-sm leading-6 text-ink-soft">
-              Plantas y macetas de aluminio cepillado. Seleccionamos y enviamos a todo el país
-              con el mismo cuidado con el que las elegimos.
+              Plantas y macetas de aluminio cepillado. Seleccionamos y enviamos a toda Argentina
+              (excepto Tierra del Fuego) con el mismo cuidado con el que las elegimos.
             </p>
           </div>
 
