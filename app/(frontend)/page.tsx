@@ -6,9 +6,6 @@ import {
   getSiteContent,
 } from "@/lib/payload"
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
-
 export const dynamic = "force-dynamic"
 
 export default async function Home() {
@@ -32,7 +29,6 @@ export default async function Home() {
       categories={categories}
       featuredProduct={featuredProduct}
       productCounts={productCounts}
-      serverURL={SITE_URL}
     />
   )
 }

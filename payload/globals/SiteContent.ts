@@ -1,8 +1,5 @@
 import type { GlobalConfig } from "payload"
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
-
 export const SiteContent: GlobalConfig = {
   slug: "site-content",
   label: "Contenido del sitio",
@@ -11,7 +8,10 @@ export const SiteContent: GlobalConfig = {
     description:
       "Textos, fotos y números editables de la home. Usá el botón Live Preview arriba a la derecha para ver los cambios en tiempo real. Podés guardar como borrador cuantas veces quieras y solo al tocar Publicar los cambios pasan a la web.",
     livePreview: {
-      url: () => SITE_URL,
+      // URL relativa — el iframe la resuelve contra el origen donde está
+      // abierto el admin. Así funciona en localhost, LAN y producción sin
+      // hardcodear ningún host.
+      url: () => "/",
       breakpoints: [
         { label: "Móvil", name: "mobile", width: 390, height: 844 },
         { label: "Tablet", name: "tablet", width: 820, height: 1180 },

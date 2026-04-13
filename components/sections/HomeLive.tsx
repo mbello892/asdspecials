@@ -12,22 +12,26 @@ import { Story } from "./Story"
 import { Newsletter } from "./Newsletter"
 import { Footer } from "./Footer"
 
+// Usamos window.location.origin para que el merge del live preview
+// acepte mensajes del admin sin importar desde qué host se abra
+// (localhost, LAN IP, dominio real de producción).
+const originForPreview =
+  typeof window !== "undefined" ? window.location.origin : ""
+
 export function HomeLive({
   initialContent,
   categories,
   featuredProduct,
   productCounts,
-  serverURL,
 }: {
   initialContent: SiteContent
   categories: Category[]
   featuredProduct: Product | null
   productCounts: Record<string, number>
-  serverURL: string
 }) {
   const { data } = useLivePreview<SiteContent>({
     initialData: initialContent,
-    serverURL,
+    serverURL: originForPreview,
     depth: 2,
   })
 

@@ -29,7 +29,11 @@ const lanOrigins = (process.env.NEXT_DEV_LAN_HOSTS || "")
 const ALLOWED_ORIGINS = Array.from(new Set([SITE_URL, ...lanOrigins]))
 
 export default buildConfig({
-  serverURL: SITE_URL,
+  // No seteamos `serverURL` a propósito — si lo hiciéramos, Payload lo
+  // hornearía en el bundle del admin y las llamadas de API desde el celu
+  // irían a `localhost:3000` (que desde el celu apunta a sí mismo, no al
+  // dev server). Con serverURL ausente, el admin usa URLs relativas y
+  // funciona igual en localhost, LAN y producción.
   cors: ALLOWED_ORIGINS,
   csrf: ALLOWED_ORIGINS,
   admin: {
