@@ -1,10 +1,45 @@
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
+import { formatHeadline } from "@/lib/format-headline"
 
-export function Hero() {
+type HeroData = {
+  eyebrow?: string | null
+  headline?: string | null
+  subheadline?: string | null
+  primaryCta?: { label?: string | null; href?: string | null } | null
+  secondaryCta?: { label?: string | null; href?: string | null } | null
+}
+
+const DEFAULTS: Required<{
+  eyebrow: string
+  headline: string
+  subheadline: string
+  primaryCta: { label: string; href: string }
+  secondaryCta: { label: string; href: string }
+}> = {
+  eyebrow: "Nueva entrada · Monstera Variegada",
+  headline: "Plantas elegidas.\nMacetas que las *sostienen*.",
+  subheadline:
+    "Seleccionamos cada planta a mano — sanas, aclimatadas, listas para entrar a tu casa — y las presentamos en macetas de aluminio cepillado hechas para durar toda la vida.",
+  primaryCta: { label: "Ver plantas", href: "#plantas" },
+  secondaryCta: { label: "Explorar macetas", href: "#macetas" },
+}
+
+export function Hero({ data }: { data?: HeroData | null }) {
+  const eyebrow = data?.eyebrow || DEFAULTS.eyebrow
+  const headline = data?.headline || DEFAULTS.headline
+  const subheadline = data?.subheadline || DEFAULTS.subheadline
+  const primary = {
+    label: data?.primaryCta?.label || DEFAULTS.primaryCta.label,
+    href: data?.primaryCta?.href || DEFAULTS.primaryCta.href,
+  }
+  const secondary = {
+    label: data?.secondaryCta?.label || DEFAULTS.secondaryCta.label,
+    href: data?.secondaryCta?.href || DEFAULTS.secondaryCta.href,
+  }
+
   return (
     <section className="relative isolate grain overflow-hidden pb-24 pt-36 md:pt-44">
-      {/* Decorative natural washes — moss + wood + concrete */}
       <div
         aria-hidden
         className="pointer-events-none absolute -top-40 left-1/2 h-[680px] w-[680px] -translate-x-1/2 rounded-full opacity-45 blur-3xl"
@@ -23,40 +58,36 @@ export function Hero() {
       />
 
       <div className="relative mx-auto grid max-w-6xl grid-cols-1 gap-14 px-6 lg:grid-cols-12 lg:gap-10">
-        {/* Left: editorial headline */}
         <div className="lg:col-span-7 lg:pt-10">
           <div className="glass mb-7 inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[11px] uppercase tracking-[0.18em] text-ink-soft">
             <span className="h-1.5 w-1.5 rounded-full bg-moss" />
-            Nueva entrada · Monstera Variegada
+            {eyebrow}
           </div>
 
           <h1 className="font-display text-[clamp(3rem,1.5rem+5.2vw,6.5rem)] font-normal leading-[0.92] tracking-tightest text-ink">
-            Plantas elegidas.
-            <br />
-            Macetas que las <span className="italic text-moss">sostienen</span>.
+            {formatHeadline(headline)}
           </h1>
 
           <p className="mt-8 max-w-xl text-lg leading-8 text-ink-soft">
-            Seleccionamos cada planta a mano — sanas, aclimatadas, listas para entrar a tu casa —
-            y las presentamos en macetas de aluminio cepillado hechas para durar toda la vida.
+            {subheadline}
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <Link
-              href="#plantas"
+              href={primary.href}
               className="group inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 text-sm font-medium text-bg transition-transform duration-[var(--dur-base)] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[1px]"
             >
-              Ver plantas
+              {primary.label}
               <ArrowUpRight
                 className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                 strokeWidth={1.8}
               />
             </Link>
             <Link
-              href="#macetas"
+              href={secondary.href}
               className="inline-flex items-center gap-2 rounded-full border border-line px-6 py-3.5 text-sm font-medium text-ink transition-colors hover:bg-bg-deep"
             >
-              Explorar macetas
+              {secondary.label}
             </Link>
           </div>
 
@@ -76,7 +107,6 @@ export function Hero() {
           </dl>
         </div>
 
-        {/* Right: hero product stack */}
         <div className="relative lg:col-span-5">
           <div className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-[var(--r-xl)] bg-bg-deep shadow-[0_30px_80px_-30px_oklch(22%_0.015_150/0.25)]">
             <img
@@ -90,7 +120,6 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Floating product card */}
           <div className="glass absolute -bottom-6 -left-4 hidden w-60 rounded-lg p-4 md:block">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-concrete/30">

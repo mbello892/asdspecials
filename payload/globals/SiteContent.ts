@@ -1,11 +1,23 @@
 import type { GlobalConfig } from "payload"
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
+
 export const SiteContent: GlobalConfig = {
   slug: "site-content",
   label: "Contenido del sitio",
   admin: {
     group: "Contenido",
-    description: "Textos editables de la home. Cambiá lo que quieras y se actualiza en el sitio.",
+    description:
+      "Textos editables de la home. Cambiá lo que quieras y se actualiza en el sitio — usá el botón Live Preview arriba a la derecha para ver los cambios en tiempo real.",
+    livePreview: {
+      url: () => SITE_URL,
+      breakpoints: [
+        { label: "Móvil", name: "mobile", width: 390, height: 844 },
+        { label: "Tablet", name: "tablet", width: 820, height: 1180 },
+        { label: "Desktop", name: "desktop", width: 1440, height: 900 },
+      ],
+    },
   },
   access: {
     read: () => true,

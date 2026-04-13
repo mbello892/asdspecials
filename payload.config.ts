@@ -14,7 +14,13 @@ import { SiteContent } from "./payload/globals/SiteContent.ts"
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
+
 export default buildConfig({
+  serverURL: SITE_URL,
+  cors: [SITE_URL],
+  csrf: [SITE_URL],
   admin: {
     user: Users.slug,
     meta: {

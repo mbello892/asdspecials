@@ -1,23 +1,12 @@
-import { Navbar } from "@/components/sections/Navbar"
-import { Hero } from "@/components/sections/Hero"
-import { Marquee } from "@/components/sections/Marquee"
-import { Collections } from "@/components/sections/Collections"
-import { FeaturedProduct } from "@/components/sections/FeaturedProduct"
-import { Story } from "@/components/sections/Story"
-import { Newsletter } from "@/components/sections/Newsletter"
-import { Footer } from "@/components/sections/Footer"
+import { HomeLive } from "@/components/sections/HomeLive"
+import { getSiteContent } from "@/lib/payload"
 
-export default function Home() {
-  return (
-    <main className="relative">
-      <Navbar />
-      <Hero />
-      <Marquee />
-      <Collections />
-      <FeaturedProduct />
-      <Story />
-      <Newsletter />
-      <Footer />
-    </main>
-  )
+const SITE_URL =
+  process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
+
+export const dynamic = "force-dynamic"
+
+export default async function Home() {
+  const initialContent = await getSiteContent()
+  return <HomeLive initialContent={initialContent} serverURL={SITE_URL} />
 }

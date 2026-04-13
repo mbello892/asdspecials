@@ -523,7 +523,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * Textos editables de la home. Cambiá lo que quieras y se actualiza en el sitio.
+ * Textos editables de la home. Cambiá lo que quieras y se actualiza en el sitio — usá el botón Live Preview arriba a la derecha para ver los cambios en tiempo real.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-content".
