@@ -17,10 +17,21 @@ const dirname = path.dirname(filename)
 const SITE_URL =
   process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
 
+// Orígenes extra para acceso desde la LAN (celu, otras compus en la red).
+// Leídos de NEXT_DEV_LAN_HOSTS en .env.local, separados por coma.
+// Ej: NEXT_DEV_LAN_HOSTS=10.10.10.102,192.168.1.20
+const lanOrigins = (process.env.NEXT_DEV_LAN_HOSTS || "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean)
+  .map((host) => `http://${host}:3000`)
+
+const ALLOWED_ORIGINS = Array.from(new Set([SITE_URL, ...lanOrigins]))
+
 export default buildConfig({
   serverURL: SITE_URL,
-  cors: [SITE_URL],
-  csrf: [SITE_URL],
+  cors: ALLOWED_ORIGINS,
+  csrf: ALLOWED_ORIGINS,
   admin: {
     user: Users.slug,
     meta: {
