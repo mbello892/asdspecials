@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { useLivePreview } from "@payloadcms/live-preview-react"
 import type { Category, Product, SiteContent } from "@payload-types"
 
@@ -12,12 +13,6 @@ import { Story } from "./Story"
 import { Newsletter } from "./Newsletter"
 import { Footer } from "./Footer"
 
-// Usamos window.location.origin para que el merge del live preview
-// acepte mensajes del admin sin importar desde qué host se abra
-// (localhost, LAN IP, dominio real de producción).
-const originForPreview =
-  typeof window !== "undefined" ? window.location.origin : ""
-
 export function HomeLive({
   initialContent,
   categories,
@@ -29,9 +24,19 @@ export function HomeLive({
   featuredProduct: Product | null
   productCounts: Record<string, number>
 }) {
+  // Origen se setea DESPUÉS del mount para evitar hydration mismatch
+  // (server render no tiene window, client render sí → distinto HTML).
+  // Durante el primer paint ambos lados usan "" y recién al hidratar
+  // useEffect lo actualiza con el origen real, re-registrando el
+  // listener de postMessage del live preview.
+  const [origin, setOrigin] = useState<string>("")
+  useEffect(() => {
+    setOrigin(window.location.origin)
+  }, [])
+
   const { data } = useLivePreview<SiteContent>({
     initialData: initialContent,
-    serverURL: originForPreview,
+    serverURL: origin,
     depth: 2,
   })
 
