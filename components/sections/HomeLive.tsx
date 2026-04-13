@@ -24,19 +24,20 @@ export function HomeLive({
   featuredProduct: Product | null
   productCounts: Record<string, number>
 }) {
-  // Origen se setea DESPUÉS del mount para evitar hydration mismatch
-  // (server render no tiene window, client render sí → distinto HTML).
-  // Durante el primer paint ambos lados usan "" y recién al hidratar
-  // useEffect lo actualiza con el origen real, re-registrando el
-  // listener de postMessage del live preview.
-  const [origin, setOrigin] = useState<string>("")
+  // Origen se setea DESPUÉS del mount para evitar hydration mismatch.
+  // Fallback a "*" (wildcard de postMessage) hasta que useEffect corra —
+  // pasar "" rompe con "Invalid target origin" porque postMessage no
+  // acepta string vacío, pero sí acepta "*" que significa "cualquier
+  // origen". Una vez hidratado, useEffect lo reemplaza por el origen
+  // real y el hook re-registra su listener.
+  const [origin, setOrigin] = useState<string | null>(null)
   useEffect(() => {
     setOrigin(window.location.origin)
   }, [])
 
   const { data } = useLivePreview<SiteContent>({
     initialData: initialContent,
-    serverURL: origin,
+    serverURL: origin ?? "*",
     depth: 2,
   })
 

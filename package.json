@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
+    "dev:clean": "node scripts/kill-port.mjs 3000 && next dev --turbopack",
+    "kill:dev": "node scripts/kill-port.mjs 3000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
