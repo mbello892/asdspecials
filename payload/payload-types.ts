@@ -222,9 +222,9 @@ export interface Product {
   id: number;
   name: string;
   /**
-   * URL del producto — minúsculas, sin espacios (ej: monstera-variegada).
+   * URL del producto. Se genera solo desde el nombre si lo dejás vacío (ej: 'Monstera Variegada' → 'monstera-variegada').
    */
-  slug: string;
+  slug?: string | null;
   category: number | Category;
   /**
    * Una o dos líneas que aparecen en las cards del catálogo.

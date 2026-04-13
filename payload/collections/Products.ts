@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload"
+import { slugify } from "../../lib/slugify.ts"
 
 export const Products: CollectionConfig = {
   slug: "products",
@@ -10,6 +11,16 @@ export const Products: CollectionConfig = {
   },
   access: {
     read: () => true,
+  },
+  hooks: {
+    beforeValidate: [
+      ({ data }) => {
+        if (data && !data.slug && typeof data.name === "string" && data.name.trim()) {
+          data.slug = slugify(data.name)
+        }
+        return data
+      },
+    ],
   },
   fields: [
     {
@@ -27,10 +38,10 @@ export const Products: CollectionConfig = {
             {
               name: "slug",
               type: "text",
-              required: true,
               unique: true,
               admin: {
-                description: "URL del producto — minúsculas, sin espacios (ej: monstera-variegada).",
+                description:
+                  "URL del producto. Se genera solo desde el nombre si lo dejás vacío (ej: 'Monstera Variegada' → 'monstera-variegada').",
               },
             },
             {
