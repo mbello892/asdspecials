@@ -1,31 +1,53 @@
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
+import type { Media, SiteContent } from "@payload-types"
 import { formatHeadline } from "@/lib/format-headline"
 
-type HeroData = {
-  eyebrow?: string | null
-  headline?: string | null
-  subheadline?: string | null
-  primaryCta?: { label?: string | null; href?: string | null } | null
-  secondaryCta?: { label?: string | null; href?: string | null } | null
-}
+type HeroData = SiteContent["hero"] | null | undefined
 
-const DEFAULTS: Required<{
-  eyebrow: string
-  headline: string
-  subheadline: string
-  primaryCta: { label: string; href: string }
-  secondaryCta: { label: string; href: string }
-}> = {
+const DEFAULTS = {
   eyebrow: "Nueva entrada · Monstera Variegada",
   headline: "Plantas elegidas.\nMacetas que las *sostienen*.",
   subheadline:
     "Seleccionamos cada planta a mano — sanas, aclimatadas, listas para entrar a tu casa — y las presentamos en macetas de aluminio cepillado hechas para durar toda la vida.",
   primaryCta: { label: "Ver plantas", href: "#plantas" },
   secondaryCta: { label: "Explorar macetas", href: "#macetas" },
+  mainImage:
+    "https://images.unsplash.com/photo-1545241047-6083a3684587?w=900&q=80&auto=format&fit=crop",
+  mainImageCaption: "Monstera Variegada",
+  mainImageTag: "Stock limitado",
+  sideCardImage:
+    "https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=200&q=80&auto=format&fit=crop",
+  sideCardLabel: "Maceta",
+  sideCardValue: "Aluminio Ø22 cm",
+  stats: [
+    { label: "Plantas", value: "120+" },
+    { label: "Macetas", value: "6 medidas" },
+    { label: "Envío", value: "Todo el país" },
+  ],
 }
 
-export function Hero({ data }: { data?: HeroData | null }) {
+function mediaUrl(
+  media: (number | Media | null) | undefined,
+  fallback: string,
+): string {
+  if (media && typeof media === "object" && "url" in media && media.url) {
+    return media.url
+  }
+  return fallback
+}
+
+function mediaAlt(
+  media: (number | Media | null) | undefined,
+  fallback: string,
+): string {
+  if (media && typeof media === "object" && "alt" in media && media.alt) {
+    return media.alt
+  }
+  return fallback
+}
+
+export function Hero({ data }: { data?: HeroData }) {
   const eyebrow = data?.eyebrow || DEFAULTS.eyebrow
   const headline = data?.headline || DEFAULTS.headline
   const subheadline = data?.subheadline || DEFAULTS.subheadline
@@ -37,6 +59,21 @@ export function Hero({ data }: { data?: HeroData | null }) {
     label: data?.secondaryCta?.label || DEFAULTS.secondaryCta.label,
     href: data?.secondaryCta?.href || DEFAULTS.secondaryCta.href,
   }
+  const mainImgUrl = mediaUrl(data?.mainImage, DEFAULTS.mainImage)
+  const mainImgAlt = mediaAlt(
+    data?.mainImage,
+    "Producto destacado del hero",
+  )
+  const mainCaption = data?.mainImageCaption || DEFAULTS.mainImageCaption
+  const mainTag = data?.mainImageTag || DEFAULTS.mainImageTag
+  const sideImgUrl = mediaUrl(data?.sideCard?.image, DEFAULTS.sideCardImage)
+  const sideLabel = data?.sideCard?.label || DEFAULTS.sideCardLabel
+  const sideValue = data?.sideCard?.value || DEFAULTS.sideCardValue
+
+  const stats =
+    data?.stats && data.stats.length === 3
+      ? data.stats.map((s) => ({ label: s.label, value: s.value }))
+      : DEFAULTS.stats
 
   return (
     <section className="relative isolate grain overflow-hidden pb-24 pt-36 md:pt-44">
@@ -92,31 +129,27 @@ export function Hero({ data }: { data?: HeroData | null }) {
           </div>
 
           <dl className="mt-14 grid max-w-lg grid-cols-3 gap-6 border-t border-line-soft pt-8">
-            <div>
-              <dt className="text-[11px] uppercase tracking-[0.16em] text-ink-dim">Plantas</dt>
-              <dd className="mt-1 font-display text-2xl text-ink">120+</dd>
-            </div>
-            <div>
-              <dt className="text-[11px] uppercase tracking-[0.16em] text-ink-dim">Macetas</dt>
-              <dd className="mt-1 font-display text-2xl text-ink">6 medidas</dd>
-            </div>
-            <div>
-              <dt className="text-[11px] uppercase tracking-[0.16em] text-ink-dim">Envío</dt>
-              <dd className="mt-1 font-display text-2xl text-ink">Todo el país</dd>
-            </div>
+            {stats.map((stat, i) => (
+              <div key={i}>
+                <dt className="text-[11px] uppercase tracking-[0.16em] text-ink-dim">
+                  {stat.label}
+                </dt>
+                <dd className="mt-1 font-display text-2xl text-ink">{stat.value}</dd>
+              </div>
+            ))}
           </dl>
         </div>
 
         <div className="relative lg:col-span-5">
           <div className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-[var(--r-xl)] bg-bg-deep shadow-[0_30px_80px_-30px_oklch(22%_0.015_150/0.25)]">
             <img
-              src="https://images.unsplash.com/photo-1545241047-6083a3684587?w=900&q=80&auto=format&fit=crop"
-              alt="Monstera Deliciosa Variegada en maceta de aluminio cepillado"
+              src={mainImgUrl}
+              alt={mainImgAlt}
               className="h-full w-full object-cover"
             />
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/45 via-ink/10 to-transparent p-6">
-              <p className="font-display text-xl italic text-bg">Monstera Variegada</p>
-              <p className="text-xs uppercase tracking-[0.18em] text-bg/80">Stock limitado</p>
+              <p className="font-display text-xl italic text-bg">{mainCaption}</p>
+              <p className="text-xs uppercase tracking-[0.18em] text-bg/80">{mainTag}</p>
             </div>
           </div>
 
@@ -124,14 +157,16 @@ export function Hero({ data }: { data?: HeroData | null }) {
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-concrete/30">
                 <img
-                  src="https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=200&q=80&auto=format&fit=crop"
+                  src={sideImgUrl}
                   alt=""
                   className="h-full w-full object-cover"
                 />
               </div>
               <div>
-                <p className="text-[11px] uppercase tracking-[0.14em] text-ink-dim">Maceta</p>
-                <p className="text-sm font-medium text-ink">Aluminio Ø22 cm</p>
+                <p className="text-[11px] uppercase tracking-[0.14em] text-ink-dim">
+                  {sideLabel}
+                </p>
+                <p className="text-sm font-medium text-ink">{sideValue}</p>
               </div>
             </div>
           </div>

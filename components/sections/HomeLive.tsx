@@ -36,10 +36,14 @@ export function HomeLive({
       <Navbar />
       <Hero data={data.hero} />
       <Marquee items={data.marquee} />
-      <Collections categories={categories} productCounts={productCounts} />
+      <Collections
+        categories={categories}
+        productCounts={productCounts}
+        introTitle={data.collectionsIntro?.title}
+      />
       <FeaturedProduct product={featuredProduct} />
-      <Story pillars={data.pillars} />
-      <Newsletter />
+      <Story pillars={data.pillars} intro={data.storyIntro} />
+      <Newsletter data={data.newsletter} />
       <Footer data={data.footer} />
     </main>
   )

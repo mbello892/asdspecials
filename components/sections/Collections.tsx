@@ -1,6 +1,10 @@
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
 import type { Category, Media } from "@payload-types"
+import { formatHeadline } from "@/lib/format-headline"
+
+const DEFAULT_INTRO_TITLE =
+  "Tres categorías. *Una obsesión*:\nque la pieza viva mucho tiempo."
 
 type CategoryWithImage = Category & { image?: Media | number | null }
 
@@ -31,11 +35,14 @@ function getImageUrl(cat: CategoryWithImage): string {
 export function Collections({
   categories,
   productCounts,
+  introTitle,
 }: {
   categories: Category[]
   productCounts?: Record<string, number>
+  introTitle?: string | null
 }) {
   const list = categories.slice(0, 3) as CategoryWithImage[]
+  const title = introTitle || DEFAULT_INTRO_TITLE
 
   return (
     <section id="plantas" className="relative px-6 py-28 md:py-36">
@@ -46,8 +53,7 @@ export function Collections({
               — Catálogo
             </p>
             <h2 className="font-display text-[clamp(2.25rem,1rem+3.2vw,4rem)] leading-[0.96] tracking-tightest text-ink">
-              Tres categorías. <span className="italic text-moss">Una obsesión</span>:<br />
-              que la pieza viva mucho tiempo.
+              {formatHeadline(title)}
             </h2>
           </div>
           <Link

@@ -1,9 +1,21 @@
+import { formatHeadline } from "@/lib/format-headline"
+
 type Pillar = {
   number?: string | null
   title?: string | null
   body?: string | null
   id?: string | null
 }
+
+type StoryIntro = {
+  title?: string | null
+  body?: string | null
+}
+
+const DEFAULT_INTRO = {
+  title: "Una planta no es un *adorno*.\nEs un compromiso.",
+  body: "Por eso nos tomamos en serio cada parte del proceso — desde qué ejemplar elegimos hasta cómo llega a tu casa. Hacemos series cortas porque preferimos conocer bien lo que vendemos antes que tener catálogo infinito.",
+} as const
 
 const DEFAULT_PILLARS: { number: string; title: string; body: string }[] = [
   {
@@ -23,7 +35,16 @@ const DEFAULT_PILLARS: { number: string; title: string; body: string }[] = [
   },
 ]
 
-export function Story({ pillars }: { pillars?: Pillar[] | null }) {
+export function Story({
+  pillars,
+  intro,
+}: {
+  pillars?: Pillar[] | null
+  intro?: StoryIntro | null
+}) {
+  const introTitle = intro?.title || DEFAULT_INTRO.title
+  const introBody = intro?.body || DEFAULT_INTRO.body
+
   const list =
     pillars && pillars.length > 0
       ? pillars.map((p) => ({
@@ -42,15 +63,9 @@ export function Story({ pillars }: { pillars?: Pillar[] | null }) {
               — Cómo trabajamos
             </p>
             <h2 className="font-display text-[clamp(2rem,1rem+2.6vw,3.5rem)] leading-[0.98] tracking-tightest text-ink">
-              Una planta no es un{" "}
-              <span className="italic text-moss">adorno</span>.<br />
-              Es un compromiso.
+              {formatHeadline(introTitle)}
             </h2>
-            <p className="mt-7 max-w-md text-base leading-7 text-ink-soft">
-              Por eso nos tomamos en serio cada parte del proceso — desde qué ejemplar elegimos
-              hasta cómo llega a tu casa. Hacemos series cortas porque preferimos conocer bien
-              lo que vendemos antes que tener catálogo infinito.
-            </p>
+            <p className="mt-7 max-w-md text-base leading-7 text-ink-soft">{introBody}</p>
           </div>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 lg:col-span-7">

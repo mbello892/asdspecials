@@ -523,7 +523,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * Textos editables de la home. Cambiá lo que quieras y se actualiza en el sitio — usá el botón Live Preview arriba a la derecha para ver los cambios en tiempo real.
+ * Textos, fotos y números editables de la home. Usá el botón Live Preview arriba a la derecha para ver los cambios en tiempo real. Podés guardar como borrador cuantas veces quieras y solo al tocar Publicar los cambios pasan a la web.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-content".
@@ -545,6 +545,27 @@ export interface SiteContent {
       label?: string | null;
       href?: string | null;
     };
+    /**
+     * La foto grande del hero. Recomendado: vertical 4:5, mínimo 1200×1500 px, fondo limpio.
+     */
+    mainImage?: (number | null) | Media;
+    mainImageCaption?: string | null;
+    /**
+     * Texto corto en mayúsculas, tipo 'Stock limitado' o 'Edición 12/12'.
+     */
+    mainImageTag?: string | null;
+    sideCard?: {
+      image?: (number | null) | Media;
+      label?: string | null;
+      value?: string | null;
+    };
+    stats?:
+      | {
+          label: string;
+          value: string;
+          id?: string | null;
+        }[]
+      | null;
   };
   marquee?:
     | {
@@ -552,6 +573,16 @@ export interface SiteContent {
         id?: string | null;
       }[]
     | null;
+  collectionsIntro?: {
+    /**
+     * Usá *asteriscos* para itálica verde. Apretá Enter para saltar de línea.
+     */
+    title?: string | null;
+  };
+  storyIntro?: {
+    title?: string | null;
+    body?: string | null;
+  };
   pillars?:
     | {
         number: string;
@@ -560,11 +591,18 @@ export interface SiteContent {
         id?: string | null;
       }[]
     | null;
+  newsletter?: {
+    eyebrow?: string | null;
+    title?: string | null;
+    body?: string | null;
+    ctaLabel?: string | null;
+  };
   footer?: {
     tagline?: string | null;
     whatsapp?: string | null;
     instagram?: string | null;
   };
+  _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -591,12 +629,40 @@ export interface SiteContentSelect<T extends boolean = true> {
               label?: T;
               href?: T;
             };
+        mainImage?: T;
+        mainImageCaption?: T;
+        mainImageTag?: T;
+        sideCard?:
+          | T
+          | {
+              image?: T;
+              label?: T;
+              value?: T;
+            };
+        stats?:
+          | T
+          | {
+              label?: T;
+              value?: T;
+              id?: T;
+            };
       };
   marquee?:
     | T
     | {
         label?: T;
         id?: T;
+      };
+  collectionsIntro?:
+    | T
+    | {
+        title?: T;
+      };
+  storyIntro?:
+    | T
+    | {
+        title?: T;
+        body?: T;
       };
   pillars?:
     | T
@@ -606,6 +672,14 @@ export interface SiteContentSelect<T extends boolean = true> {
         body?: T;
         id?: T;
       };
+  newsletter?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        body?: T;
+        ctaLabel?: T;
+      };
   footer?:
     | T
     | {
@@ -613,6 +687,7 @@ export interface SiteContentSelect<T extends boolean = true> {
         whatsapp?: T;
         instagram?: T;
       };
+  _status?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
