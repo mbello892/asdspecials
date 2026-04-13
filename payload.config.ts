@@ -14,8 +14,19 @@ import { SiteContent } from "./payload/globals/SiteContent.ts"
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+// En Vercel, cada preview deployment tiene URL distinta por commit, así que
+// leemos VERCEL_URL (deploy actual) y VERCEL_PROJECT_PRODUCTION_URL (prod fija)
+// como fallback. NEXT_PUBLIC_APP_URL sigue teniendo prioridad si se setea.
+const vercelUrls = [
+  process.env.VERCEL_URL,
+  process.env.VERCEL_PROJECT_PRODUCTION_URL,
+  process.env.VERCEL_BRANCH_URL,
+]
+  .filter((v): v is string => Boolean(v))
+  .map((host) => `https://${host}`)
+
 const SITE_URL =
-  process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
+  process.env.NEXT_PUBLIC_APP_URL || vercelUrls[0] || "http://localhost:3000"
 
 // Orígenes extra para acceso desde la LAN (celu, otras compus en la red).
 // Leídos de NEXT_DEV_LAN_HOSTS en .env.local, separados por coma.
@@ -26,7 +37,9 @@ const lanOrigins = (process.env.NEXT_DEV_LAN_HOSTS || "")
   .filter(Boolean)
   .map((host) => `http://${host}:3000`)
 
-const ALLOWED_ORIGINS = Array.from(new Set([SITE_URL, ...lanOrigins]))
+const ALLOWED_ORIGINS = Array.from(
+  new Set([SITE_URL, ...vercelUrls, ...lanOrigins]),
+)
 
 export default buildConfig({
   // No seteamos `serverURL` a propósito — si lo hiciéramos, Payload lo
