@@ -1,0 +1,72 @@
+import Link from "next/link"
+import type { Product } from "@payload-types"
+import { formatPrice } from "@/lib/format"
+
+const FALLBACK =
+  "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?w=900&q=80&auto=format&fit=crop"
+
+function firstImageUrl(images: Product["images"]): string {
+  const first = images?.[0]
+  if (
+    first?.image &&
+    typeof first.image === "object" &&
+    "url" in first.image &&
+    first.image.url
+  ) {
+    return first.image.url
+  }
+  return FALLBACK
+}
+
+export function ProductCard({ product }: { product: Product }) {
+  const img = firstImageUrl(product.images)
+  const categoryName =
+    typeof product.category === "object" ? product.category.name : ""
+  const soldOut = product.stock === 0
+  const lowStock = product.stock > 0 && product.stock <= 3
+
+  return (
+    <Link
+      href={`/producto/${product.slug}`}
+      className="group relative block"
+    >
+      <div className="relative aspect-[4/5] overflow-hidden rounded-[var(--r)] bg-bg-deep">
+        <img
+          src={img}
+          alt={product.name}
+          className="h-full w-full object-cover transition-transform duration-[var(--dur-slow)] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+        />
+        {soldOut && (
+          <div className="absolute inset-0 grid place-items-center bg-bg/70 text-xs uppercase tracking-[0.18em] text-ink">
+            Agotado
+          </div>
+        )}
+        {lowStock && !soldOut && (
+          <span className="absolute left-3 top-3 rounded-full bg-ink/80 px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-bg">
+            Últimas {product.stock}
+          </span>
+        )}
+      </div>
+      <div className="mt-4 flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          {categoryName && (
+            <p className="text-[10px] uppercase tracking-[0.16em] text-ink-dim">
+              {categoryName}
+            </p>
+          )}
+          <h3 className="mt-0.5 truncate font-display text-lg leading-snug text-ink">
+            {product.name}
+          </h3>
+          {product.shortDescription && (
+            <p className="mt-1 line-clamp-2 text-xs text-ink-soft">
+              {product.shortDescription}
+            </p>
+          )}
+        </div>
+        <p className="shrink-0 font-display text-lg text-ink tabular-nums">
+          {formatPrice(product.price)}
+        </p>
+      </div>
+    </Link>
+  )
+}
