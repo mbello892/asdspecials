@@ -1,76 +1,68 @@
 # asdspecials
 
-## Project Overview
+## What This Project Is
+The user wants to build an ecommerce landing page for selling home decor. The goal is to create a luxurious and seamless buying experience for the users, in contrast to the current disorganized and chaotic website at asdspecials.com.
 
-A ecommerce landing page, where we will be selling deco. The idea is to build a landing page with luxury vibes, and the process to buy should be really an experience for the user. We can fetch this site: https://asdspecials.com as reference. We are using this woocomerce now, and looks bad, not organized, and transmiting disorder.
+## Stack
 
-## Stack Details
+| Layer       | Technology | Reason                                                           |
+| ----------- | ---------- | ---------------------------------------------------------------- |
+| Auth        | Supabase Auth | Provides a secure and scalable authentication solution.      |
+| Build       | Next.js (built-in) | Chosen for its robust feature set and developer experience. |
+| Deploy      | Vercel | Seamless deployment and hosting platform for Next.js projects. |
+| Styling     | Tailwind CSS + shadcn/ui | Tailwind provides a utility-first approach, while shadcn/ui offers a collection of high-quality UI components. |
+| Database    | Supabase (PostgreSQL) | Supabase provides a full-featured, Postgres-based database solution. |
+| Frontend    | Next.js + TypeScript | TypeScript ensures type safety and improved developer experience. |
+| Reasoning   | Manually configured | The user has specific requirements and wants to have full control over the stack. |
 
-- **Frontend**: Next.js + TypeScript
-- **Styling**: Tailwind CSS + shadcn/ui
-- **Build**: Next.js (built-in)
-- **Database**: Supabase (PostgreSQL)
-- **Auth**: Supabase Auth
-- **Deploy**: Vercel
-- **Reasoning**: Manually configured
+## First Time Setup
+1. Check if `.env.local` exists. If not, copy from `.env.example`.
+2. Fill in the required environment variables:
+   - `SUPABASE_URL`: Your Supabase project URL.
+   - `SUPABASE_ANON_KEY`: Your Supabase anon key.
+3. Run `pnpm install` to install all dependencies.
+4. Run `pnpm dev` to start the development server.
+5. Verify the app loads at `localhost:3000`.
 
-## Folder Structure
+## Before You Start Coding
+IMPORTANT instructions for Claude Code:
+- Before writing any code, ask the user what they want to build first. Don't assume.
+- If the user's description is vague, ask clarifying questions about: target audience, key features, design style, and priority.
+- Always verify env vars are configured before attempting to run or build.
 
-The project follows a modular structure, with the following main folders:
-
-- `src/`
-  - `components/`: Contains all the reusable UI components.
-  - `pages/`: Contains the Next.js pages.
-  - `styles/`: Contains the global styles and Tailwind CSS configuration.
-  - `lib/`: Contains utility functions, API clients, and other shared logic.
-  - `hooks/`: Contains custom React hooks.
-  - `types/`: Contains type definitions used throughout the project.
+## Project Structure
+- `.env.example`: Example environment variables file.
+- `.gitignore`: Defines files and folders to be ignored by Git.
+- `CLAUDE.md`: This operational guide for Claude Code.
+- `README.md`: General project documentation.
+- `app/`: Next.js app directory structure:
+  - `(frontend)/`: Contains all frontend-related components and pages.
+  - `(payload)/`: Holds Payload CMS-related files.
+  - `api/`: Handles API routes.
+- `components/`: Reusable UI components.
+- `lib/`: Utility functions and Supabase client setup.
+- `payload/`: Payload CMS configuration.
+- `scripts/`: Scripts for database management.
+- `stores/`: Global state management (if needed).
+- `types/`: TypeScript type definitions.
 
 ## Key Conventions
-
-- Follow the Next.js file-based routing convention.
-- Use TypeScript for type safety and better developer experience.
-- Adhere to the Tailwind CSS naming conventions and utility-first approach.
-- Organize components into related folders (e.g., `components/layout`, `components/product`).
-- Use descriptive variable and function names.
-- Write meaningful commit messages that describe the changes.
-- Document any complex or non-obvious functionality.
+- TypeScript strict mode, no `any`.
+- All database queries through Supabase client.
+- Server components by default, 'use client' only when needed.
+- Mobile-first responsive design.
+- Any org conventions listed above.
 
 ## Common Commands
-
-- `npm run dev`: Starts the development server.
-- `npm run build`: Builds the production-ready application.
-- `npm run start`: Starts the production server.
-- `npm run lint`: Runs the linter.
-- `npm run test`: Runs the tests.
-
-## Architecture Decisions
-
-1. **Front-end Framework**: Next.js was chosen for its server-side rendering capabilities, file-based routing, and robust ecosystem.
-2. **Styling**: Tailwind CSS was selected for its utility-first approach, which promotes consistency and developer productivity. The shadcn/ui library was included to provide a set of pre-built, accessible components.
-3. **Database**: Supabase was chosen for its seamless integration with PostgreSQL and the built-in authentication features.
-4. **Deployment**: Vercel was selected for its tight integration with Next.js and the overall ease of use.
-
-## What NOT to Do
-
-- Do not directly modify global styles or the Tailwind CSS configuration without careful consideration.
-- Avoid over-engineering or over-abstracting components and functionality.
-- Do not introduce unnecessary dependencies or libraries without justification.
-- Refrain from merging incomplete or untested features into the main branch.
-## Recommended Skills
-
-Install these Claude Code skills for AI-assisted development:
-
 ```bash
-npx skills add vercel-labs/agent-skills@vercel-react-best-practices -g -y  # React and Next.js patterns from Vercel Engineering
-npx skills add tenequm/claude-plugins@shadcn-tailwind -g -y  # Tailwind CSS and shadcn/ui component patterns
-npx skills add anthropics/skills@supabase -g -y  # Supabase best practices: RLS, auth, real-time
-npx skills add binjuhor/shadcn-lar@frontend-design-pro -g -y  # Professional UI/UX design patterns
-npx skills add anthropics/skills@testing-patterns -g -y  # Test writing patterns for frontend and backend
+pnpm dev          # Start development server
+pnpm build        # Production build
+pnpm lint         # Run linter
 ```
 
-- **React Best Practices**: React and Next.js patterns from Vercel Engineering — Your project uses React/Next.js
-- **Tailwind + shadcn/ui**: Tailwind CSS and shadcn/ui component patterns — Your project uses Tailwind + shadcn
-- **Supabase Patterns**: Supabase best practices: RLS, auth, real-time — Your project uses Supabase
-- **Frontend Design Pro**: Professional UI/UX design patterns — Helps create polished, professional interfaces
-- **Testing Patterns**: Test writing patterns for frontend and backend — Every production app needs tests
+## What NOT To Do
+- Don't skip env var setup.
+- Don't use `any` in TypeScript.
+- Don't commit `.env.local`.
+- Don't modify files in `node_modules`.
+- Don't install packages without asking the user first.
