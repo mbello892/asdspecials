@@ -1,27 +1,17 @@
 import Link from "next/link"
-import type { Product } from "@payload-types"
+import type { Product } from "@/types/shop"
 import { formatPrice } from "@/lib/format"
 
 const FALLBACK =
   "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?w=900&q=80&auto=format&fit=crop"
 
 function firstImageUrl(images: Product["images"]): string {
-  const first = images?.[0]
-  if (
-    first?.image &&
-    typeof first.image === "object" &&
-    "url" in first.image &&
-    first.image.url
-  ) {
-    return first.image.url
-  }
-  return FALLBACK
+  return images?.[0]?.image?.url || FALLBACK
 }
 
 export function ProductCard({ product }: { product: Product }) {
   const img = firstImageUrl(product.images)
-  const categoryName =
-    typeof product.category === "object" ? product.category.name : ""
+  const categoryName = product.category?.name ?? ""
   const soldOut = product.stock === 0
   const lowStock = product.stock > 0 && product.stock <= 3
 

@@ -1,10 +1,10 @@
 import { HomeLive } from "@/components/sections/HomeLive"
+import { getSiteContent } from "@/lib/payload"
 import {
   getCategories,
   getFeaturedProduct,
   getProducts,
-  getSiteContent,
-} from "@/lib/payload"
+} from "@/lib/woocommerce"
 
 export const dynamic = "force-dynamic"
 
@@ -18,8 +18,7 @@ export default async function Home() {
 
   const productCounts: Record<string, number> = {}
   for (const product of allProducts) {
-    const cat = product.category
-    const slug = typeof cat === "object" ? cat.slug : null
+    const slug = product.category?.slug
     if (slug) productCounts[slug] = (productCounts[slug] ?? 0) + 1
   }
 

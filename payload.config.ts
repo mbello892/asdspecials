@@ -8,8 +8,6 @@ import sharp from "sharp"
 
 import { Users } from "./payload/collections/Users.ts"
 import { Media } from "./payload/collections/Media.ts"
-import { Categories } from "./payload/collections/Categories.ts"
-import { Products } from "./payload/collections/Products.ts"
 import { SiteContent } from "./payload/globals/SiteContent.ts"
 
 const filename = fileURLToPath(import.meta.url)
@@ -56,7 +54,7 @@ export default buildConfig({
       titleSuffix: " · asdspecials admin",
     },
   },
-  collections: [Users, Media, Categories, Products],
+  collections: [Users, Media],
   globals: [SiteContent],
   editor: lexicalEditor(),
   plugins: [
@@ -88,6 +86,11 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI || "",
     },
+    // Dev push apaga el prompt interactivo de drizzle cuando hay orphan tables
+    // (las de products/categories que quedaron de Payload antes del move a WC).
+    // Si agregamos collections nuevas o cambiamos schema, pnpm generate:types
+    // refleja los tipos; las tablas existentes no se tocan.
+    push: false,
   }),
   sharp,
 })

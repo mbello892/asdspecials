@@ -2,7 +2,7 @@ import Link from "next/link"
 import { Navbar } from "@/components/sections/Navbar"
 import { Footer } from "@/components/sections/Footer"
 import { ProductCard } from "@/components/shop/ProductCard"
-import { getCategories, getProducts } from "@/lib/payload"
+import { getCategories, getProducts } from "@/lib/woocommerce"
 
 export const dynamic = "force-dynamic"
 

@@ -1,15 +1,10 @@
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
-import type { Product, Media } from "@payload-types"
+import type { Product } from "@/types/shop"
 import { formatPrice } from "@/lib/format"
 
 function firstImageUrl(images: Product["images"]): string | null {
-  if (!images || images.length === 0) return null
-  const first = images[0]
-  if (first.image && typeof first.image === "object" && "url" in first.image && first.image.url) {
-    return first.image.url
-  }
-  return null
+  return images?.[0]?.image?.url ?? null
 }
 
 const FALLBACK_IMAGE =
@@ -35,8 +30,7 @@ export function FeaturedProduct({ product }: { product: Product | null }) {
   }
 
   const imgUrl = firstImageUrl(product.images) || FALLBACK_IMAGE
-  const categoryName =
-    typeof product.category === "object" ? product.category.name : "Producto"
+  const categoryName = product.category?.name ?? "Producto"
 
   return (
     <section className="relative px-6 py-24 md:py-32">

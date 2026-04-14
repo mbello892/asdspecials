@@ -69,8 +69,6 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
-    categories: Category;
-    products: Product;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -80,8 +78,6 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
-    categories: CategoriesSelect<false> | CategoriesSelect<true>;
-    products: ProductsSelect<false> | ProductsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -198,84 +194,6 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories".
- */
-export interface Category {
-  id: number;
-  name: string;
-  /**
-   * URL corta (ej: plantas, macetas, velas).
-   */
-  slug: string;
-  description?: string | null;
-  image?: (number | null) | Media;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Plantas, macetas, velas y mesas en venta.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "products".
- */
-export interface Product {
-  id: number;
-  name: string;
-  /**
-   * URL del producto. Se genera solo desde el nombre si lo dejás vacío (ej: 'Monstera Variegada' → 'monstera-variegada').
-   */
-  slug?: string | null;
-  category: number | Category;
-  /**
-   * Una o dos líneas que aparecen en las cards del catálogo.
-   */
-  shortDescription?: string | null;
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  featured?: boolean | null;
-  price: number;
-  /**
-   * Si lo completás, se muestra el precio anterior tachado para indicar descuento.
-   */
-  compareAtPrice?: number | null;
-  stock: number;
-  status: 'active' | 'draft' | 'hidden';
-  images: {
-    image: number | Media;
-    id?: string | null;
-  }[];
-  plantCare?: {
-    light?: ('direct' | 'bright-indirect' | 'medium' | 'low') | null;
-    water?: ('low' | 'medium' | 'high') | null;
-    /**
-     * ej: 60–80 cm
-     */
-    size?: string | null;
-  };
-  potSpecs?: {
-    material?: string | null;
-    diameter?: number | null;
-    height?: number | null;
-    withStand?: boolean | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -305,14 +223,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
-      } | null)
-    | ({
-        relationTo: 'categories';
-        value: number | Category;
-      } | null)
-    | ({
-        relationTo: 'products';
-        value: number | Product;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -430,57 +340,6 @@ export interface MediaSelect<T extends boolean = true> {
               filename?: T;
             };
       };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories_select".
- */
-export interface CategoriesSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  description?: T;
-  image?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "products_select".
- */
-export interface ProductsSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  category?: T;
-  shortDescription?: T;
-  description?: T;
-  featured?: T;
-  price?: T;
-  compareAtPrice?: T;
-  stock?: T;
-  status?: T;
-  images?:
-    | T
-    | {
-        image?: T;
-        id?: T;
-      };
-  plantCare?:
-    | T
-    | {
-        light?: T;
-        water?: T;
-        size?: T;
-      };
-  potSpecs?:
-    | T
-    | {
-        material?: T;
-        diameter?: T;
-        height?: T;
-        withStand?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

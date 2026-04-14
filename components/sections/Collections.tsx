@@ -1,12 +1,12 @@
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
-import type { Category, Media } from "@payload-types"
+import type { Category } from "@/types/shop"
 import { formatHeadline } from "@/lib/format-headline"
 
 const DEFAULT_INTRO_TITLE =
   "Tres categorías. *Una obsesión*:\nque la pieza viva mucho tiempo."
 
-type CategoryWithImage = Category & { image?: Media | number | null }
+type CategoryWithImage = Category
 
 const SPANS = [
   "md:col-span-7 md:row-span-2 aspect-[5/6]",
@@ -26,10 +26,7 @@ const FALLBACK_IMAGE: Record<string, string> = {
 }
 
 function getImageUrl(cat: CategoryWithImage): string {
-  if (cat.image && typeof cat.image === "object" && "url" in cat.image && cat.image.url) {
-    return cat.image.url
-  }
-  return FALLBACK_IMAGE[cat.slug] || FALLBACK_IMAGE.default
+  return cat.image?.url || FALLBACK_IMAGE[cat.slug] || FALLBACK_IMAGE.default
 }
 
 export function Collections({

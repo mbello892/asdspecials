@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft, ArrowUpRight } from "lucide-react"
-import type { Media, Product } from "@payload-types"
+import type { Product } from "@/types/shop"
 import { Navbar } from "@/components/sections/Navbar"
 import { Footer } from "@/components/sections/Footer"
-import { getProductBySlug } from "@/lib/payload"
+import { getProductBySlug } from "@/lib/woocommerce"
 import { formatPrice } from "@/lib/format"
 
 export const dynamic = "force-dynamic"
@@ -14,13 +14,8 @@ const FALLBACK =
 
 function resolveImages(images: Product["images"]): string[] {
   if (!images?.length) return [FALLBACK]
-  return images
-    .map((i) =>
-      i.image && typeof i.image === "object" && "url" in i.image && i.image.url
-        ? i.image.url
-        : null,
-    )
-    .filter((u): u is string => Boolean(u))
+  const urls = images.map((i) => i.image?.url).filter((u): u is string => Boolean(u))
+  return urls.length > 0 ? urls : [FALLBACK]
 }
 
 const LIGHT_LABEL: Record<string, string> = {
@@ -54,10 +49,8 @@ export default async function ProductPage({ params }: Params) {
   if (!product || product.status !== "active") notFound()
 
   const images = resolveImages(product.images)
-  const categoryName =
-    typeof product.category === "object" ? product.category.name : ""
-  const categorySlug =
-    typeof product.category === "object" ? product.category.slug : ""
+  const categoryName = product.category?.name ?? ""
+  const categorySlug = product.category?.slug ?? ""
 
   const soldOut = product.stock === 0
 

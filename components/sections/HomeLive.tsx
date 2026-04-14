@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { useLivePreview } from "@payloadcms/live-preview-react"
-import type { Category, Product, SiteContent } from "@payload-types"
+import type { SiteContent } from "@payload-types"
+import type { Category, Product } from "@/types/shop"
 
 import { Navbar } from "./Navbar"
 import { Hero } from "./Hero"
