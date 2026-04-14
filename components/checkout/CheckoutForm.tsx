@@ -1,9 +1,9 @@
 "use client"
 
-import { useState, type FormEvent } from "react"
+import { useEffect, useRef, useState, type FormEvent } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { Loader2, Banknote, CircleCheck, ArrowRight } from "lucide-react"
+import { Loader2, Banknote, CircleCheck, ArrowRight, AlertTriangle } from "lucide-react"
 import { useCartStore, selectSubtotal } from "@/lib/cart-store"
 import { formatPrice } from "@/lib/format"
 
@@ -42,20 +42,101 @@ const INITIAL_BILLING: BillingForm = {
   notes: "",
 }
 
+type SyncWarning =
+  | { type: "removed"; productId: number; name: string }
+  | { type: "clamped"; productId: number; name: string; from: number; to: number }
+  | { type: "outofstock"; productId: number; name: string }
+
 export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetails }) {
   const router = useRouter()
   const items = useCartStore((s) => s.items)
   const hydrated = useCartStore((s) => s.hydrated)
   const clear = useCartStore((s) => s.clear)
+  const removeItem = useCartStore((s) => s.removeItem)
+  const setQty = useCartStore((s) => s.setQty)
+  const syncItem = useCartStore((s) => s.syncItem)
   const subtotal = useCartStore(selectSubtotal)
 
   const [billing, setBilling] = useState<BillingForm>(INITIAL_BILLING)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [warnings, setWarnings] = useState<SyncWarning[]>([])
+  const [validating, setValidating] = useState(false)
+  const hasValidated = useRef(false)
 
   function update<K extends keyof BillingForm>(key: K, value: BillingForm[K]) {
     setBilling((prev) => ({ ...prev, [key]: value }))
   }
+
+  // Sync contra WC al entrar al checkout: productos borrados, stock bajado,
+  // precios cambiados. Corre UNA vez por mount despues de hidratar.
+  useEffect(() => {
+    if (!hydrated || hasValidated.current) return
+    const snapshot = useCartStore.getState().items
+    if (snapshot.length === 0) return
+    hasValidated.current = true
+    setValidating(true)
+    ;(async () => {
+      try {
+        const res = await fetch("/api/cart/validate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            items: snapshot.map((i) => ({ productId: i.productId, quantity: i.quantity })),
+          }),
+        })
+        if (!res.ok) return
+        const data = (await res.json()) as {
+          items: Array<{
+            productId: number
+            exists: boolean
+            stock: number
+            price: number
+            name: string | null
+            slug: string | null
+            image: string | null
+          }>
+        }
+        const next: SyncWarning[] = []
+        for (const fresh of data.items) {
+          const local = snapshot.find((i) => i.productId === fresh.productId)
+          if (!local) continue
+          if (!fresh.exists) {
+            next.push({ type: "removed", productId: fresh.productId, name: local.name })
+            removeItem(fresh.productId)
+            continue
+          }
+          if (fresh.stock === 0) {
+            next.push({ type: "outofstock", productId: fresh.productId, name: local.name })
+            removeItem(fresh.productId)
+            continue
+          }
+          syncItem(fresh.productId, {
+            stock: fresh.stock,
+            price: fresh.price,
+            image: fresh.image ?? local.image,
+          })
+          if (fresh.stock < local.quantity) {
+            next.push({
+              type: "clamped",
+              productId: fresh.productId,
+              name: local.name,
+              from: local.quantity,
+              to: fresh.stock,
+            })
+            setQty(fresh.productId, fresh.stock)
+          }
+        }
+        setWarnings(next)
+      } catch {
+        // Si falla la validación, dejamos que el submit del servidor se encargue
+      } finally {
+        setValidating(false)
+      }
+    })()
+    // Solo dependemos de hydrated; el ref guard impide re-runs.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hydrated])
 
   if (!hydrated) {
     return <div className="h-32 animate-pulse rounded bg-bg-deep" />
@@ -115,6 +196,45 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
     <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-10 lg:grid-cols-12">
       {/* Left column: billing + payment */}
       <div className="space-y-10 lg:col-span-7">
+        {warnings.length > 0 && (
+          <div className="rounded-[var(--r)] border border-wood-deep bg-wood-deep/5 p-5">
+            <div className="mb-2 flex items-center gap-2 text-wood-deep">
+              <AlertTriangle className="h-4 w-4" strokeWidth={2} />
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]">
+                Ajustamos tu carrito
+              </p>
+            </div>
+            <ul className="space-y-1.5 text-sm text-ink">
+              {warnings.map((w, i) => (
+                <li key={i} className="flex items-start gap-2">
+                  <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-wood-deep" />
+                  <span>
+                    {w.type === "removed" && (
+                      <>
+                        <span className="font-medium">{w.name}</span> ya no está disponible
+                        y lo sacamos del carrito.
+                      </>
+                    )}
+                    {w.type === "outofstock" && (
+                      <>
+                        <span className="font-medium">{w.name}</span> quedó sin stock y lo
+                        sacamos del carrito.
+                      </>
+                    )}
+                    {w.type === "clamped" && (
+                      <>
+                        De <span className="font-medium">{w.name}</span> solo quedan{" "}
+                        <span className="font-medium">{w.to}</span> (tenías {w.from}),
+                        ajustamos la cantidad.
+                      </>
+                    )}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {/* Billing */}
         <fieldset className="space-y-5" disabled={submitting}>
           <legend className="mb-4 text-[11px] uppercase tracking-[0.22em] text-ink-dim">
@@ -124,6 +244,7 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
             <Field label="Nombre" required>
               <input
                 required
+                autoComplete="given-name"
                 value={billing.firstName}
                 onChange={(e) => update("firstName", e.target.value)}
                 className={inputCls}
@@ -132,6 +253,7 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
             <Field label="Apellido" required>
               <input
                 required
+                autoComplete="family-name"
                 value={billing.lastName}
                 onChange={(e) => update("lastName", e.target.value)}
                 className={inputCls}
@@ -141,6 +263,8 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
               <input
                 required
                 type="email"
+                autoComplete="email"
+                inputMode="email"
                 value={billing.email}
                 onChange={(e) => update("email", e.target.value)}
                 className={inputCls}
@@ -151,6 +275,8 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
               <input
                 required
                 type="tel"
+                autoComplete="tel"
+                inputMode="tel"
                 value={billing.phone}
                 onChange={(e) => update("phone", e.target.value)}
                 className={inputCls}
@@ -164,6 +290,7 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
               <Field label="Dirección" required>
                 <input
                   required
+                  autoComplete="street-address"
                   value={billing.address1}
                   onChange={(e) => update("address1", e.target.value)}
                   className={inputCls}
@@ -173,6 +300,7 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
             </div>
             <Field label="Piso/Depto (opcional)">
               <input
+                autoComplete="address-line2"
                 value={billing.address2}
                 onChange={(e) => update("address2", e.target.value)}
                 className={inputCls}
@@ -184,6 +312,7 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
             <Field label="Ciudad" required>
               <input
                 required
+                autoComplete="address-level2"
                 value={billing.city}
                 onChange={(e) => update("city", e.target.value)}
                 className={inputCls}
@@ -192,6 +321,7 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
             <Field label="Provincia" required>
               <input
                 required
+                autoComplete="address-level1"
                 value={billing.state}
                 onChange={(e) => update("state", e.target.value)}
                 className={inputCls}
@@ -200,6 +330,8 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
             <Field label="Código postal" required>
               <input
                 required
+                autoComplete="postal-code"
+                inputMode="numeric"
                 value={billing.postcode}
                 onChange={(e) => update("postcode", e.target.value)}
                 className={inputCls}
@@ -209,6 +341,7 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
 
           <Field label="Notas para el pedido (opcional)">
             <textarea
+              autoComplete="off"
               value={billing.notes}
               onChange={(e) => update("notes", e.target.value)}
               rows={3}

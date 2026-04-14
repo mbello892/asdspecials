@@ -26,6 +26,7 @@ type CartState = {
   removeItem: (productId: number) => void
   updateQty: (productId: number, delta: number) => void
   setQty: (productId: number, quantity: number) => void
+  syncItem: (productId: number, patch: Partial<CartItem>) => void
   clear: () => void
 }
 
@@ -68,6 +69,12 @@ export const useCartStore = create<CartState>()(
             i.productId === productId
               ? { ...i, quantity: Math.max(1, Math.min(quantity, i.stock || Infinity)) }
               : i,
+          ),
+        }),
+      syncItem: (productId, patch) =>
+        set({
+          items: get().items.map((i) =>
+            i.productId === productId ? { ...i, ...patch } : i,
           ),
         }),
       clear: () => set({ items: [] }),
