@@ -28,11 +28,6 @@ export function ProductCard({ product }: { product: Product }) {
             soldOut ? "opacity-55 grayscale" : ""
           }`}
         />
-        {soldOut && (
-          <span className="absolute left-3 top-3 rounded-full border border-ink bg-bg/90 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.14em] text-ink backdrop-blur">
-            Sin stock
-          </span>
-        )}
         {lowStock && (
           <span className="absolute left-3 top-3 rounded-full bg-ink/85 px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-bg backdrop-blur">
             Últimas {product.stock}
