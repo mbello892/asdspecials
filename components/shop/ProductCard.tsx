@@ -12,8 +12,8 @@ function firstImageUrl(images: Product["images"]): string {
 export function ProductCard({ product }: { product: Product }) {
   const img = firstImageUrl(product.images)
   const categoryName = product.category?.name ?? ""
-  const soldOut = product.stock === 0
-  const lowStock = product.stock > 0 && product.stock <= 3
+  const soldOut = product.stock < 1
+  const lowStock = !soldOut && product.stock <= 3
 
   return (
     <Link
@@ -24,15 +24,17 @@ export function ProductCard({ product }: { product: Product }) {
         <img
           src={img}
           alt={product.name}
-          className="h-full w-full object-cover transition-transform duration-[var(--dur-slow)] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+          className={`h-full w-full object-cover transition-transform duration-[var(--dur-slow)] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03] ${
+            soldOut ? "opacity-55 grayscale" : ""
+          }`}
         />
         {soldOut && (
-          <div className="absolute inset-0 grid place-items-center bg-bg/70 text-xs uppercase tracking-[0.18em] text-ink">
-            Agotado
-          </div>
+          <span className="absolute left-3 top-3 rounded-full border border-ink bg-bg/90 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.14em] text-ink backdrop-blur">
+            Sin stock
+          </span>
         )}
-        {lowStock && !soldOut && (
-          <span className="absolute left-3 top-3 rounded-full bg-ink/80 px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-bg">
+        {lowStock && (
+          <span className="absolute left-3 top-3 rounded-full bg-ink/85 px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-bg backdrop-blur">
             Últimas {product.stock}
           </span>
         )}
@@ -44,7 +46,7 @@ export function ProductCard({ product }: { product: Product }) {
               {categoryName}
             </p>
           )}
-          <h3 className="mt-0.5 truncate font-display text-lg leading-snug text-ink">
+          <h3 className={`mt-0.5 truncate font-display text-lg leading-snug ${soldOut ? "text-ink-soft" : "text-ink"}`}>
             {product.name}
           </h3>
           {product.shortDescription && (
@@ -53,9 +55,15 @@ export function ProductCard({ product }: { product: Product }) {
             </p>
           )}
         </div>
-        <p className="shrink-0 font-display text-lg text-ink tabular-nums">
-          {formatPrice(product.price)}
-        </p>
+        {soldOut ? (
+          <p className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.14em] text-leather">
+            Sin stock
+          </p>
+        ) : (
+          <p className="shrink-0 font-display text-lg text-ink tabular-nums">
+            {formatPrice(product.price)}
+          </p>
+        )}
       </div>
     </Link>
   )
