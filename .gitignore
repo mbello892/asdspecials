@@ -9,3 +9,5 @@ next-env.d.ts
 
 # Payload local media uploads (dev only)
 /media/
+
+.vercel

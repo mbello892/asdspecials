@@ -3,6 +3,7 @@ import { fileURLToPath } from "url"
 import { buildConfig } from "payload"
 import { postgresAdapter } from "@payloadcms/db-postgres"
 import { lexicalEditor } from "@payloadcms/richtext-lexical"
+import { s3Storage } from "@payloadcms/storage-s3"
 import sharp from "sharp"
 
 import { Users } from "./payload/collections/Users.ts"
@@ -58,6 +59,27 @@ export default buildConfig({
   collections: [Users, Media, Categories, Products],
   globals: [SiteContent],
   editor: lexicalEditor(),
+  plugins: [
+    // Supabase Storage expone un endpoint S3-compatible, así que usamos el
+    // adapter estándar de S3 de Payload. Los archivos se guardan en el bucket
+    // "media" del proyecto Supabase en vez del filesystem local (que en Vercel
+    // es read-only / efímero).
+    s3Storage({
+      collections: {
+        media: true,
+      },
+      bucket: process.env.S3_BUCKET || "media",
+      config: {
+        endpoint: process.env.S3_ENDPOINT,
+        region: process.env.S3_REGION || "us-east-1",
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID || "",
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || "",
+        },
+        forcePathStyle: true,
+      },
+    }),
+  ],
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {
     outputFile: path.resolve(dirname, "payload/payload-types.ts"),
