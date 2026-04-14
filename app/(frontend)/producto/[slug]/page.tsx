@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, ArrowUpRight } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 import type { Product } from "@/types/shop"
 import { Navbar } from "@/components/sections/Navbar"
 import { Footer } from "@/components/sections/Footer"
+import { AddToCartButton } from "@/components/shop/AddToCartButton"
 import { getProductBySlug } from "@/lib/woocommerce"
 import { formatPrice } from "@/lib/format"
 
@@ -191,18 +192,7 @@ export default async function ProductPage({ params }: Params) {
                         : `Stock disponible`}
                   </p>
                 </div>
-                <button
-                  disabled={soldOut}
-                  className="group inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 text-sm font-medium text-bg transition-transform hover:-translate-y-[1px] disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  {soldOut ? "Agotado" : "Agregar al carrito"}
-                  {!soldOut && (
-                    <ArrowUpRight
-                      className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                      strokeWidth={1.8}
-                    />
-                  )}
-                </button>
+                <AddToCartButton product={product} />
               </div>
 
               <Link

@@ -235,3 +235,126 @@ export async function getFeaturedProduct(): Promise<Product | null> {
   )
   return raw[0] ? adaptProduct(raw[0]) : null
 }
+
+// ——— orders
+
+export type OrderLineItem = {
+  id: number
+  name: string
+  quantity: number
+  total: string
+  image: string | null
+  slug: string | null
+}
+
+export type Order = {
+  id: number
+  number: string
+  status: string
+  total: string
+  subtotal: string
+  currency: string
+  paymentMethod: string
+  paymentMethodTitle: string
+  dateCreated: string
+  customerNote: string
+  billing: {
+    firstName: string
+    lastName: string
+    email: string
+    phone: string
+    address1: string
+    address2: string
+    city: string
+    state: string
+    postcode: string
+    country: string
+  }
+  lineItems: OrderLineItem[]
+}
+
+type WCOrderRaw = {
+  id: number
+  number: string
+  status: string
+  total: string
+  currency: string
+  payment_method: string
+  payment_method_title: string
+  date_created: string
+  customer_note: string
+  billing: {
+    first_name: string
+    last_name: string
+    email: string
+    phone: string
+    address_1: string
+    address_2: string
+    city: string
+    state: string
+    postcode: string
+    country: string
+  }
+  line_items: Array<{
+    id: number
+    name: string
+    quantity: number
+    total: string
+    image?: { src?: string } | null
+    product_id: number
+  }>
+}
+
+function adaptOrder(wc: WCOrderRaw): Order {
+  const subtotal = wc.line_items.reduce((sum, li) => sum + Number(li.total || 0), 0)
+  return {
+    id: wc.id,
+    number: wc.number,
+    status: wc.status,
+    total: wc.total,
+    subtotal: String(subtotal),
+    currency: wc.currency,
+    paymentMethod: wc.payment_method,
+    paymentMethodTitle: wc.payment_method_title,
+    dateCreated: wc.date_created,
+    customerNote: wc.customer_note,
+    billing: {
+      firstName: wc.billing.first_name,
+      lastName: wc.billing.last_name,
+      email: wc.billing.email,
+      phone: wc.billing.phone,
+      address1: wc.billing.address_1,
+      address2: wc.billing.address_2,
+      city: wc.billing.city,
+      state: wc.billing.state,
+      postcode: wc.billing.postcode,
+      country: wc.billing.country,
+    },
+    lineItems: wc.line_items.map((li) => ({
+      id: li.id,
+      name: li.name,
+      quantity: li.quantity,
+      total: li.total,
+      image: li.image?.src ?? null,
+      slug: null,
+    })),
+  }
+}
+
+export async function getOrder(id: number): Promise<Order | null> {
+  try {
+    // Orders no se cachean — cada vez que alguien abre /orden/[id] queremos
+    // el estado actualizado (podría haber cambiado desde wp-admin).
+    assertEnv()
+    const auth = Buffer.from(`${WC_CONSUMER_KEY}:${WC_CONSUMER_SECRET}`).toString("base64")
+    const res = await fetch(`${WC_URL!.replace(/\/$/, "")}/wp-json/wc/v3/orders/${id}`, {
+      headers: { Authorization: `Basic ${auth}`, Accept: "application/json" },
+      cache: "no-store",
+    })
+    if (!res.ok) return null
+    const raw = (await res.json()) as WCOrderRaw
+    return adaptOrder(raw)
+  } catch {
+    return null
+  }
+}

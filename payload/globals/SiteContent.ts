@@ -285,6 +285,59 @@ export const SiteContent: GlobalConfig = {
           ],
         },
         {
+          label: "Pago",
+          description:
+            "Datos que se muestran al cliente cuando elige pagar por transferencia. Al cliente le llegan también por mail en la confirmación del pedido.",
+          fields: [
+            {
+              name: "bankTransfer",
+              type: "group",
+              label: "Transferencia bancaria",
+              fields: [
+                {
+                  name: "bankName",
+                  type: "text",
+                  label: "Banco",
+                  defaultValue: "Banco Galicia",
+                },
+                {
+                  name: "accountHolder",
+                  type: "text",
+                  label: "Titular de la cuenta",
+                  defaultValue: "asdspecials SA",
+                },
+                {
+                  name: "cbu",
+                  type: "text",
+                  label: "CBU",
+                  admin: { placeholder: "0070000000000000000000" },
+                },
+                {
+                  name: "alias",
+                  type: "text",
+                  label: "Alias",
+                  admin: { placeholder: "asdspecials.plantas" },
+                },
+                {
+                  name: "cuit",
+                  type: "text",
+                  label: "CUIT",
+                  admin: { placeholder: "30-00000000-0" },
+                },
+                {
+                  name: "discountLabel",
+                  type: "text",
+                  label: "Etiqueta de descuento (opcional)",
+                  admin: {
+                    description:
+                      "Texto corto tipo '10% OFF' que se muestra al lado del método. Dejá vacío si no aplica descuento.",
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        {
           label: "Footer",
           fields: [
             {

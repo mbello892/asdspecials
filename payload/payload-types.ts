@@ -456,6 +456,17 @@ export interface SiteContent {
     body?: string | null;
     ctaLabel?: string | null;
   };
+  bankTransfer?: {
+    bankName?: string | null;
+    accountHolder?: string | null;
+    cbu?: string | null;
+    alias?: string | null;
+    cuit?: string | null;
+    /**
+     * Texto corto tipo '10% OFF' que se muestra al lado del método. Dejá vacío si no aplica descuento.
+     */
+    discountLabel?: string | null;
+  };
   footer?: {
     tagline?: string | null;
     whatsapp?: string | null;
@@ -538,6 +549,16 @@ export interface SiteContentSelect<T extends boolean = true> {
         title?: T;
         body?: T;
         ctaLabel?: T;
+      };
+  bankTransfer?:
+    | T
+    | {
+        bankName?: T;
+        accountHolder?: T;
+        cbu?: T;
+        alias?: T;
+        cuit?: T;
+        discountLabel?: T;
       };
   footer?:
     | T
