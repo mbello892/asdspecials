@@ -172,7 +172,8 @@ export async function POST(req: Request) {
   // Al crear una orden WC reserva stock (cambia stock_quantity de los productos).
   // Invalidamos el cache del catalogo para que la proxima pagina muestre el stock
   // actualizado en vez del cacheado de hasta 30s atras.
-  revalidateTag(TAG_PRODUCTS)
+  // Nota: en Next 16 revalidateTag toma un profile de cacheLife como 2do arg.
+  revalidateTag(TAG_PRODUCTS, "default")
 
   return NextResponse.json({
     id: order.id,
