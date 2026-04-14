@@ -23,9 +23,9 @@ function assertEnv() {
   }
 }
 
-const REVALIDATE_SECONDS = 60
-const TAG_PRODUCTS = "wc:products"
-const TAG_CATEGORIES = "wc:categories"
+const REVALIDATE_SECONDS = 30
+export const TAG_PRODUCTS = "wc:products"
+export const TAG_CATEGORIES = "wc:categories"
 
 async function wcFetch<T>(path: string, tags: string[]): Promise<T> {
   assertEnv()

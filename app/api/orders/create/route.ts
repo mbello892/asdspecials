@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server"
+import { revalidateTag } from "next/cache"
+import { TAG_PRODUCTS } from "@/lib/woocommerce"
 
 /**
  * POST /api/orders/create
@@ -166,6 +168,12 @@ export async function POST(req: Request) {
   }
 
   const order = payload as { id: number; number: string; total: string; status: string }
+
+  // Al crear una orden WC reserva stock (cambia stock_quantity de los productos).
+  // Invalidamos el cache del catalogo para que la proxima pagina muestre el stock
+  // actualizado en vez del cacheado de hasta 30s atras.
+  revalidateTag(TAG_PRODUCTS)
+
   return NextResponse.json({
     id: order.id,
     number: order.number,

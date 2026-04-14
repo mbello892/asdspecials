@@ -1,11 +1,12 @@
 import Link from "next/link"
-import { Search, ShoppingBag, User } from "lucide-react"
+import { Search, User } from "lucide-react"
+import { CartNavButton } from "@/components/shop/CartNavButton"
 
 const NAV = [
-  { label: "Plantas", href: "#plantas" },
-  { label: "Macetas", href: "#macetas" },
-  { label: "Velas", href: "#velas" },
-  { label: "Cuidados", href: "#cuidados" },
+  { label: "Plantas", href: "/catalogo?c=plantas" },
+  { label: "Macetas", href: "/catalogo?c=macetas-aluminio" },
+  { label: "Velas", href: "/catalogo?c=velas-soja" },
+  { label: "Mesas", href: "/catalogo?c=mesas-ratonas" },
 ]
 
 export function Navbar() {
@@ -38,13 +39,7 @@ export function Navbar() {
           <button aria-label="Cuenta" className="rounded-full p-2 transition-colors hover:text-ink">
             <User className="h-[18px] w-[18px]" strokeWidth={1.6} />
           </button>
-          <button
-            aria-label="Bolsa"
-            className="relative rounded-full p-2 transition-colors hover:text-ink"
-          >
-            <ShoppingBag className="h-[18px] w-[18px]" strokeWidth={1.6} />
-            <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-moss" />
-          </button>
+          <CartNavButton />
         </div>
       </nav>
     </header>
