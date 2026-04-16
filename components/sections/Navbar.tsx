@@ -1,6 +1,7 @@
 import Link from "next/link"
-import { Search, User } from "lucide-react"
+import { User } from "lucide-react"
 import { CartNavButton } from "@/components/shop/CartNavButton"
+import { SearchInput } from "@/components/shop/SearchInput"
 
 const NAV = [
   { label: "Plantas", href: "/catalogo?c=plantas" },
@@ -33,9 +34,7 @@ export function Navbar() {
         </ul>
 
         <div className="flex items-center gap-1 text-ink-soft">
-          <button aria-label="Buscar" className="rounded-full p-2 transition-colors hover:text-ink">
-            <Search className="h-[18px] w-[18px]" strokeWidth={1.6} />
-          </button>
+          <SearchInput />
           <button aria-label="Cuenta" className="rounded-full p-2 transition-colors hover:text-ink">
             <User className="h-[18px] w-[18px]" strokeWidth={1.6} />
           </button>

@@ -224,13 +224,31 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
   }
 }
 
-export async function getProducts(opts?: { categorySlug?: string }): Promise<Product[]> {
+export type SortOption = "recent" | "price-asc" | "price-desc" | "title-asc" | "title-desc"
+
+const SORT_MAP: Record<SortOption, string> = {
+  recent: "orderby=date&order=desc",
+  "price-asc": "orderby=price&order=asc",
+  "price-desc": "orderby=price&order=desc",
+  "title-asc": "orderby=title&order=asc",
+  "title-desc": "orderby=title&order=desc",
+}
+
+export async function getProducts(opts?: {
+  categorySlug?: string
+  sort?: SortOption
+  search?: string
+}): Promise<Product[]> {
   try {
-    let path = "/products?per_page=100&status=publish&orderby=date&order=desc"
+    const sorting = SORT_MAP[opts?.sort ?? "recent"] ?? SORT_MAP.recent
+    let path = `/products?per_page=100&status=publish&${sorting}`
     if (opts?.categorySlug) {
       const cat = await getCategoryBySlug(opts.categorySlug)
       if (!cat) return []
       path += `&category=${cat.id}`
+    }
+    if (opts?.search) {
+      path += `&search=${encodeURIComponent(opts.search)}`
     }
     const raw = await wcFetch<WCProductRaw[]>(path, [TAG_PRODUCTS])
     return raw.map(adaptProduct)
