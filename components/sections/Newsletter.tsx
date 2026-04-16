@@ -22,7 +22,7 @@ export function Newsletter({ data }: { data?: NewsletterData | null }) {
   const ctaLabel = data?.ctaLabel || DEFAULTS.ctaLabel
 
   return (
-    <section id="newsletter" className="relative px-6 py-28 md:py-36">
+    <section id="newsletter" className="concrete-section relative px-6 py-28 md:py-36">
       <div className="mx-auto max-w-4xl text-center">
         <p className="mb-5 text-[11px] uppercase tracking-[0.22em] text-ink-dim">{eyebrow}</p>
         <h2 className="reveal font-display text-[clamp(2rem,1rem+3vw,4rem)] leading-[0.98] tracking-tightest text-ink">

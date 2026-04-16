@@ -55,7 +55,7 @@ export function Story({
       : DEFAULT_PILLARS
 
   return (
-    <section id="cuidados" className="relative bg-bg-deep px-6 py-28 md:py-36">
+    <section id="cuidados" className="concrete-section relative px-6 py-28 md:py-36">
       <div className="mx-auto max-w-6xl">
         <div className="reveal grid grid-cols-1 gap-14 lg:grid-cols-12">
           <div className="lg:col-span-5">

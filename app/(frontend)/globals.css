@@ -13,8 +13,8 @@
   --line:         oklch(22% 0.015 50);
   --line-soft:    oklch(17% 0.012 50);
 
-  --moss:         oklch(60% 0.070 55);     /* copper / bronze accent */
-  --moss-up:      oklch(68% 0.065 58);
+  --moss:         oklch(55% 0.080 155);    /* dark moss green accent */
+  --moss-up:      oklch(63% 0.075 155);
   --wood:         oklch(68% 0.055 60);     /* light copper */
   --wood-deep:    oklch(48% 0.060 50);
   --concrete:     oklch(44% 0.006 60);     /* warm gray */
@@ -95,6 +95,13 @@ body::before {
   opacity: 0.06;
   mix-blend-mode: screen;
   background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+/* Concrete section — dark gray/blue cement feel, breaks the pure black */
+.concrete-section {
+  background: oklch(16% 0.005 240);
+  border-top: 1px solid oklch(22% 0.006 240 / 0.50);
+  border-bottom: 1px solid oklch(22% 0.006 240 / 0.50);
 }
 
 /* Brushed aluminum diagonal lines — ultra-subtle on surfaces */
