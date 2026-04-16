@@ -140,7 +140,7 @@ export function Hero({ data }: { data?: HeroData }) {
           </dl>
         </div>
 
-        <div className="relative lg:col-span-5">
+        <div className="relative lg:col-span-5 lg:pt-10">
           <div className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-[var(--r-xl)] bg-bg-deep shadow-[0_30px_80px_-30px_oklch(22%_0.015_150/0.25)]">
             <img
               src={mainImgUrl}
@@ -150,24 +150,6 @@ export function Hero({ data }: { data?: HeroData }) {
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/45 via-ink/10 to-transparent p-6">
               <p className="font-display text-xl italic text-bg">{mainCaption}</p>
               <p className="text-xs uppercase tracking-[0.18em] text-bg/80">{mainTag}</p>
-            </div>
-          </div>
-
-          <div className="glass absolute -bottom-6 -left-4 hidden w-60 rounded-lg p-4 md:block">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-concrete/30">
-                <img
-                  src={sideImgUrl}
-                  alt=""
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div>
-                <p className="text-[11px] uppercase tracking-[0.14em] text-ink-dim">
-                  {sideLabel}
-                </p>
-                <p className="text-sm font-medium text-ink">{sideValue}</p>
-              </div>
             </div>
           </div>
         </div>
