@@ -55,9 +55,16 @@ export function ProductCard({ product }: { product: Product }) {
             Sin stock
           </p>
         ) : (
-          <p className="shrink-0 font-display text-lg text-ink tabular-nums">
-            {formatPrice(product.price)}
-          </p>
+          <div className="shrink-0 text-right">
+            {product.compareAtPrice != null && product.compareAtPrice > product.price && (
+              <p className="text-[11px] text-ink-dim line-through tabular-nums">
+                {formatPrice(product.compareAtPrice)}
+              </p>
+            )}
+            <p className="font-display text-lg text-ink tabular-nums">
+              {formatPrice(product.price)}
+            </p>
+          </div>
         )}
       </div>
     </Link>
