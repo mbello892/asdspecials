@@ -82,7 +82,7 @@ export function Hero({ data }: { data?: HeroData }) {
         className="pointer-events-none absolute -top-40 left-1/2 h-[680px] w-[680px] -translate-x-1/2 rounded-full opacity-45 blur-3xl"
         style={{
           background:
-            "radial-gradient(closest-side, oklch(34% 0.055 150 / 0.18), transparent 70%)",
+            "radial-gradient(closest-side, oklch(52% 0.090 150 / 0.12), transparent 70%)",
         }}
       />
       <div
@@ -90,7 +90,7 @@ export function Hero({ data }: { data?: HeroData }) {
         className="pointer-events-none absolute -bottom-32 -right-20 h-[440px] w-[440px] rounded-full opacity-55 blur-3xl"
         style={{
           background:
-            "radial-gradient(closest-side, oklch(72% 0.060 70 / 0.40), transparent 70%)",
+            "radial-gradient(closest-side, oklch(38% 0.065 40 / 0.25), transparent 70%)",
         }}
       />
 
@@ -141,7 +141,7 @@ export function Hero({ data }: { data?: HeroData }) {
         </div>
 
         <div className="relative lg:col-span-5 lg:pt-10">
-          <div className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-[var(--r-xl)] bg-bg-deep shadow-[0_30px_80px_-30px_oklch(22%_0.015_150/0.25)]">
+          <div className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-[var(--r-xl)] bg-bg-deep shadow-[0_30px_80px_-30px_oklch(0%_0_0/0.50)]">
             <img
               src={mainImgUrl}
               alt={mainImgAlt}

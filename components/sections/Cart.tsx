@@ -170,7 +170,7 @@ export function Cart() {
           {/* Summary */}
           <aside className="lg:col-span-5">
             <div className="lg:sticky lg:top-28">
-              <div className="rounded-[var(--r-lg)] border border-line bg-surface p-7 shadow-[0_1px_0_oklch(100%_0_0)]">
+              <div className="rounded-[var(--r-lg)] border border-line bg-surface p-7 shadow-[0_1px_0_oklch(24%_0.008_60)]">
                 <h2 className="font-display text-2xl text-ink">Resumen del pedido</h2>
 
                 <dl className="mt-6 space-y-3 text-sm">

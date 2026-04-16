@@ -142,7 +142,7 @@ export function Collections({
               className="absolute inset-0"
               style={{
                 background:
-                  "linear-gradient(90deg, oklch(99% 0.002 150) 0%, transparent 45%)",
+                  "linear-gradient(90deg, oklch(18% 0.010 60) 0%, transparent 45%)",
               }}
             />
           </div>
