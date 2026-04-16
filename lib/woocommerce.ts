@@ -199,7 +199,7 @@ function adaptProduct(wc: WCProductRaw): Product {
 export async function getCategories(): Promise<Category[]> {
   try {
     const raw = await wcFetch<WCCategoryFull[]>(
-      "/products/categories?per_page=100&hide_empty=true&orderby=name&order=asc",
+      "/products/categories?per_page=100&hide_empty=true&orderby=count&order=desc",
       [TAG_CATEGORIES],
     )
     return raw
