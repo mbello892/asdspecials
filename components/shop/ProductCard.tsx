@@ -14,6 +14,7 @@ export function ProductCard({ product }: { product: Product }) {
   const categoryName = product.category?.name ?? ""
   const soldOut = product.stock < 1
   const lowStock = !soldOut && product.stock <= 3
+  const onSale = !soldOut && product.compareAtPrice != null && product.compareAtPrice > product.price
 
   return (
     <Link
@@ -28,6 +29,11 @@ export function ProductCard({ product }: { product: Product }) {
             soldOut ? "opacity-55 grayscale" : ""
           }`}
         />
+        {onSale && !lowStock && (
+          <span className="absolute left-3 top-3 rounded-full bg-moss px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-bg">
+            Oferta
+          </span>
+        )}
         {lowStock && (
           <span className="absolute left-3 top-3 rounded-full bg-ink/85 px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-bg backdrop-blur">
             Últimas {product.stock}
