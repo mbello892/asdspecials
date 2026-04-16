@@ -9,9 +9,9 @@ const DEFAULT_INTRO_TITLE =
 type CategoryWithImage = Category
 
 const SPANS = [
-  "md:col-span-7 md:row-span-2 aspect-[5/6]",
-  "md:col-span-5 aspect-[4/3]",
-  "md:col-span-5 aspect-[4/3]",
+  "md:col-span-7 md:row-span-2",
+  "md:col-span-5",
+  "md:col-span-5",
 ]
 
 const FALLBACK_IMAGE: Record<string, string> = {
@@ -71,14 +71,14 @@ export function Collections({
             <span className="font-mono text-ink">/admin/collections/categories</span>.
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-12">
+          <div className="grid auto-rows-[1fr] grid-cols-1 gap-5 md:grid-cols-12 md:grid-rows-2">
             {list.map((c, i) => {
               const count = productCounts?.[c.slug] ?? 0
               return (
                 <Link
                   key={c.id}
                   href={`/catalogo?c=${c.slug}`}
-                  className={`reveal group relative block overflow-hidden rounded-[var(--r-lg)] bg-bg-deep ${SPANS[i] ?? SPANS[2]}`}
+                  className={`reveal group relative block min-h-[200px] overflow-hidden rounded-[var(--r-lg)] bg-bg-deep ${SPANS[i] ?? SPANS[2]}`}
                 >
                   <img
                     src={getImageUrl(c)}
