@@ -251,7 +251,10 @@ export async function getProducts(opts?: {
       path += `&search=${encodeURIComponent(opts.search)}`
     }
     const raw = await wcFetch<WCProductRaw[]>(path, [TAG_PRODUCTS])
-    return raw.map(adaptProduct)
+    const products = raw.map(adaptProduct)
+    const inStock = products.filter((p) => p.stock > 0)
+    const outOfStock = products.filter((p) => p.stock <= 0)
+    return [...inStock, ...outOfStock]
   } catch (err) {
     console.warn("[WC] getProducts failed, returning []:", err)
     return []
