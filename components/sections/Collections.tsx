@@ -110,7 +110,7 @@ export function Collections({
           </div>
         )}
 
-        <div className="reveal mt-5 grid grid-cols-1 overflow-hidden rounded-[var(--r-lg)] border border-line-soft bg-surface md:grid-cols-12">
+        <div className="reveal brushed mt-5 grid grid-cols-1 overflow-hidden rounded-[var(--r-lg)] border border-line-soft bg-surface md:grid-cols-12">
           <div className="flex flex-col justify-between gap-6 p-8 md:col-span-7 md:p-10">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-line px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-ink-soft">
@@ -142,7 +142,7 @@ export function Collections({
               className="absolute inset-0"
               style={{
                 background:
-                  "linear-gradient(90deg, oklch(18% 0.010 60) 0%, transparent 45%)",
+                  "linear-gradient(90deg, oklch(14% 0.020 55) 0%, transparent 45%)",
               }}
             />
           </div>

@@ -82,7 +82,7 @@ export function Hero({ data }: { data?: HeroData }) {
         className="pointer-events-none absolute -top-40 left-1/2 h-[680px] w-[680px] -translate-x-1/2 rounded-full opacity-45 blur-3xl"
         style={{
           background:
-            "radial-gradient(closest-side, oklch(52% 0.090 150 / 0.12), transparent 70%)",
+            "radial-gradient(closest-side, oklch(60% 0.070 55 / 0.10), transparent 70%)",
         }}
       />
       <div
@@ -90,7 +90,7 @@ export function Hero({ data }: { data?: HeroData }) {
         className="pointer-events-none absolute -bottom-32 -right-20 h-[440px] w-[440px] rounded-full opacity-55 blur-3xl"
         style={{
           background:
-            "radial-gradient(closest-side, oklch(38% 0.065 40 / 0.25), transparent 70%)",
+            "radial-gradient(closest-side, oklch(34% 0.060 50 / 0.20), transparent 70%)",
         }}
       />
 

@@ -3,24 +3,24 @@
 @tailwind utilities;
 
 :root {
-  /* ── COLORS (OKLCH) ─ Moody luxury: charcoal + earth ─ */
-  --bg:           oklch(14% 0.008 60);     /* deep warm charcoal */
-  --bg-deep:      oklch(10% 0.006 55);     /* near-black */
-  --surface:      oklch(18% 0.010 60);     /* card surface */
-  --ink:          oklch(92% 0.006 70);     /* warm off-white text */
-  --ink-soft:     oklch(72% 0.010 65);
-  --ink-dim:      oklch(50% 0.008 60);
-  --line:         oklch(24% 0.008 60);
-  --line-soft:    oklch(20% 0.006 60);
+  /* ── COLORS (OKLCH) ─ Dark botanical copper ─ */
+  --bg:           oklch(7% 0.005 50);      /* near-black warm */
+  --bg-deep:      oklch(4% 0.003 40);      /* deepest black */
+  --surface:      oklch(14% 0.020 55);     /* dark chocolate card */
+  --ink:          oklch(87% 0.055 65);     /* champagne / peach */
+  --ink-soft:     oklch(68% 0.035 60);
+  --ink-dim:      oklch(44% 0.006 60);     /* warm gray */
+  --line:         oklch(22% 0.015 50);
+  --line-soft:    oklch(17% 0.012 50);
 
-  --moss:         oklch(52% 0.090 150);    /* vivid moss on dark */
-  --moss-up:      oklch(60% 0.080 150);
-  --wood:         oklch(62% 0.060 70);     /* warm wood */
-  --wood-deep:    oklch(48% 0.065 55);
-  --concrete:     oklch(38% 0.006 240);    /* dark concrete */
-  --concrete-deep:oklch(28% 0.006 240);
-  --leather:      oklch(38% 0.065 40);     /* rich leather */
-  --leather-up:   oklch(45% 0.070 40);
+  --moss:         oklch(60% 0.070 55);     /* copper / bronze accent */
+  --moss-up:      oklch(68% 0.065 58);
+  --wood:         oklch(68% 0.055 60);     /* light copper */
+  --wood-deep:    oklch(48% 0.060 50);
+  --concrete:     oklch(44% 0.006 60);     /* warm gray */
+  --concrete-deep:oklch(30% 0.006 55);
+  --leather:      oklch(34% 0.060 50);     /* dark chocolate */
+  --leather-up:   oklch(42% 0.065 48);
 
   /* ── TYPOGRAPHY ──────────────────────────────────── */
   --font-sans:    var(--font-inter), system-ui, sans-serif;
@@ -62,26 +62,44 @@ html, body {
 .glass {
   background: linear-gradient(
     135deg,
-    oklch(18% 0.008 60 / 0.70) 0%,
-    oklch(14% 0.006 55 / 0.50) 100%
+    oklch(14% 0.020 55 / 0.75) 0%,
+    oklch(7% 0.005 50 / 0.55) 100%
   );
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-  border: 1px solid oklch(30% 0.008 60 / 0.50);
+  backdrop-filter: blur(24px) saturate(130%);
+  -webkit-backdrop-filter: blur(24px) saturate(130%);
+  border: 1px solid oklch(60% 0.070 55 / 0.12);
   box-shadow:
-    inset 0 1px 0 oklch(30% 0.006 60 / 0.30),
-    0 8px 32px oklch(0% 0 0 / 0.30);
+    inset 0 1px 0 oklch(60% 0.070 55 / 0.08),
+    0 8px 32px oklch(0% 0 0 / 0.40);
 }
 
-/* Subtle grain for warmth (botanic photos love a hint of texture) */
+/* Grain texture — slightly stronger on dark bg for tactile warmth */
 .grain::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.04;
+  opacity: 0.06;
   mix-blend-mode: screen;
   background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+/* Brushed aluminum diagonal lines — ultra-subtle on surfaces */
+.brushed {
+  position: relative;
+}
+.brushed::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.025;
+  background: repeating-linear-gradient(
+    -45deg,
+    oklch(87% 0.055 65) 0px,
+    transparent 1px,
+    transparent 4px
+  );
 }
 
 /* ── Scroll-driven reveal (native, no JS) ──────────── */
