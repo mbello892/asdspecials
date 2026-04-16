@@ -12,7 +12,19 @@ async function payload() {
   return getPayload({ config })
 }
 
+const FALLBACK_SITE_CONTENT: SiteContent = {
+  id: 0,
+  hero: {
+    headline: "",
+  },
+}
+
 export async function getSiteContent(): Promise<SiteContent> {
-  const p = await payload()
-  return p.findGlobal({ slug: "site-content", depth: 2 })
+  try {
+    const p = await payload()
+    return p.findGlobal({ slug: "site-content", depth: 2 })
+  } catch (err) {
+    console.warn("[Payload] getSiteContent failed, returning fallback:", err)
+    return FALLBACK_SITE_CONTENT
+  }
 }

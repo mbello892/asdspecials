@@ -42,6 +42,13 @@ async function wcFetch<T>(path: string, tags: string[]): Promise<T> {
     const body = await res.text().catch(() => "")
     throw new Error(`WC GET ${path} → ${res.status}: ${body.slice(0, 200)}`)
   }
+  const contentType = res.headers.get("content-type") ?? ""
+  if (!contentType.includes("application/json")) {
+    const snippet = await res.text().catch(() => "")
+    throw new Error(
+      `WC GET ${path} → expected JSON but got "${contentType}": ${snippet.slice(0, 200)}`,
+    )
+  }
   return res.json() as Promise<T>
 }
 
@@ -190,50 +197,75 @@ function adaptProduct(wc: WCProductRaw): Product {
 // ——— public API
 
 export async function getCategories(): Promise<Category[]> {
-  const raw = await wcFetch<WCCategoryFull[]>(
-    "/products/categories?per_page=100&hide_empty=false&orderby=name&order=asc",
-    [TAG_CATEGORIES],
-  )
-  return raw
-    .filter((c) => c.slug !== "uncategorized")
-    .map((c) => toCategory(c))
+  try {
+    const raw = await wcFetch<WCCategoryFull[]>(
+      "/products/categories?per_page=100&hide_empty=false&orderby=name&order=asc",
+      [TAG_CATEGORIES],
+    )
+    return raw
+      .filter((c) => c.slug !== "uncategorized")
+      .map((c) => toCategory(c))
+  } catch (err) {
+    console.warn("[WC] getCategories failed, returning []:", err)
+    return []
+  }
 }
 
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
-  const raw = await wcFetch<WCCategoryFull[]>(
-    `/products/categories?slug=${encodeURIComponent(slug)}`,
-    [TAG_CATEGORIES, `wc:category:${slug}`],
-  )
-  return raw[0] ? toCategory(raw[0]) : null
+  try {
+    const raw = await wcFetch<WCCategoryFull[]>(
+      `/products/categories?slug=${encodeURIComponent(slug)}`,
+      [TAG_CATEGORIES, `wc:category:${slug}`],
+    )
+    return raw[0] ? toCategory(raw[0]) : null
+  } catch (err) {
+    console.warn(`[WC] getCategoryBySlug("${slug}") failed, returning null:`, err)
+    return null
+  }
 }
 
 export async function getProducts(opts?: { categorySlug?: string }): Promise<Product[]> {
-  let path = "/products?per_page=100&status=publish&orderby=date&order=desc"
-  if (opts?.categorySlug) {
-    const cat = await getCategoryBySlug(opts.categorySlug)
-    if (!cat) return []
-    path += `&category=${cat.id}`
+  try {
+    let path = "/products?per_page=100&status=publish&orderby=date&order=desc"
+    if (opts?.categorySlug) {
+      const cat = await getCategoryBySlug(opts.categorySlug)
+      if (!cat) return []
+      path += `&category=${cat.id}`
+    }
+    const raw = await wcFetch<WCProductRaw[]>(path, [TAG_PRODUCTS])
+    return raw.map(adaptProduct)
+  } catch (err) {
+    console.warn("[WC] getProducts failed, returning []:", err)
+    return []
   }
-  const raw = await wcFetch<WCProductRaw[]>(path, [TAG_PRODUCTS])
-  return raw.map(adaptProduct)
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  const raw = await wcFetch<WCProductRaw[]>(
-    `/products?slug=${encodeURIComponent(slug)}&status=any`,
-    [TAG_PRODUCTS, `wc:product:${slug}`],
-  )
-  const product = raw[0]
-  if (!product) return null
-  return adaptProduct(product)
+  try {
+    const raw = await wcFetch<WCProductRaw[]>(
+      `/products?slug=${encodeURIComponent(slug)}&status=any`,
+      [TAG_PRODUCTS, `wc:product:${slug}`],
+    )
+    const product = raw[0]
+    if (!product) return null
+    return adaptProduct(product)
+  } catch (err) {
+    console.warn(`[WC] getProductBySlug("${slug}") failed, returning null:`, err)
+    return null
+  }
 }
 
 export async function getFeaturedProduct(): Promise<Product | null> {
-  const raw = await wcFetch<WCProductRaw[]>(
-    "/products?featured=true&status=publish&per_page=1",
-    [TAG_PRODUCTS, "wc:products:featured"],
-  )
-  return raw[0] ? adaptProduct(raw[0]) : null
+  try {
+    const raw = await wcFetch<WCProductRaw[]>(
+      "/products?featured=true&status=publish&per_page=1",
+      [TAG_PRODUCTS, "wc:products:featured"],
+    )
+    return raw[0] ? adaptProduct(raw[0]) : null
+  } catch (err) {
+    console.warn("[WC] getFeaturedProduct failed, returning null:", err)
+    return null
+  }
 }
 
 // ——— orders
