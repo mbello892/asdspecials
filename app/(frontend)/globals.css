@@ -7,9 +7,9 @@
   --bg:           oklch(7% 0.005 50);      /* near-black warm */
   --bg-deep:      oklch(4% 0.003 40);      /* deepest black */
   --surface:      oklch(14% 0.020 55);     /* dark chocolate card */
-  --ink:          oklch(87% 0.055 65);     /* champagne / peach */
-  --ink-soft:     oklch(68% 0.035 60);
-  --ink-dim:      oklch(44% 0.006 60);     /* warm gray */
+  --ink:          oklch(90% 0.012 70);     /* warm cream, no peach */
+  --ink-soft:     oklch(68% 0.010 65);
+  --ink-dim:      oklch(46% 0.008 60);     /* warm gray */
   --line:         oklch(22% 0.015 50);
   --line-soft:    oklch(17% 0.012 50);
 
@@ -49,6 +49,19 @@ html, body {
   font-family: var(--font-sans);
   font-feature-settings: "ss01", "cv11";
   -webkit-font-smoothing: antialiased;
+}
+
+/* Noise texture on the entire page — visible on dark backgrounds */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.11;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: 200px 200px;
 }
 
 ::selection { background: var(--moss); color: var(--bg); }
@@ -96,7 +109,7 @@ html, body {
   opacity: 0.025;
   background: repeating-linear-gradient(
     -45deg,
-    oklch(87% 0.055 65) 0px,
+    oklch(90% 0.012 70) 0px,
     transparent 1px,
     transparent 4px
   );
