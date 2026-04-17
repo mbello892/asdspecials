@@ -24,7 +24,7 @@
 
   /* ── TYPOGRAPHY ──────────────────────────────────── */
   --font-sans:    var(--font-inter), system-ui, sans-serif;
-  --font-display: var(--font-cormorant), Georgia, serif;
+  --font-display: var(--font-playfair), Georgia, serif;
 
   /* ── RADIUS ──────────────────────────────────────── */
   --r-xs:   0.25rem;
@@ -66,7 +66,7 @@ body::before {
 
 ::selection { background: var(--moss); color: var(--bg); }
 
-/* Cormorant Garamond — luxury editorial, tight tracking */
+/* Playfair Display — serif clásica, contraste alto entre trazos */
 .font-display {
   font-feature-settings: "liga", "kern";
 }
