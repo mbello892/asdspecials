@@ -53,13 +53,14 @@ export async function POST(req: Request) {
       statusDetail: result.statusDetail,
     })
   } catch (err) {
+    let dump: string
+    try {
+      dump = JSON.stringify(err, Object.getOwnPropertyNames(err as object)).slice(0, 2000)
+    } catch {
+      dump = String(err)
+    }
+    console.error("[payments/mp] raw error:", dump)
     const msg = err instanceof Error ? err.message : "Error procesando pago"
-    const cause = err instanceof Error ? (err as Error & { cause?: unknown }).cause : undefined
-    console.error("[payments/mp] error:", {
-      msg,
-      cause: cause ? JSON.stringify(cause).slice(0, 800) : undefined,
-      stack: err instanceof Error ? err.stack?.slice(0, 500) : undefined,
-    })
     return NextResponse.json({ error: msg }, { status: 500 })
   }
 }
