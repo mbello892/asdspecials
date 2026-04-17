@@ -37,9 +37,9 @@ type Params = { params: Promise<{ slug: string }> }
 export async function generateMetadata({ params }: Params) {
   const { slug } = await params
   const product = await getProductBySlug(slug)
-  if (!product) return { title: "Producto no encontrado — asdspecials" }
+  if (!product) return { title: "Producto no encontrado — ASD Specials" }
   return {
-    title: `${product.name} — asdspecials`,
+    title: `${product.name} — ASD Specials`,
     description: product.shortDescription || undefined,
   }
 }

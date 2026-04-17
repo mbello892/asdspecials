@@ -14,14 +14,14 @@ export function Navbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4">
       <nav className="glass mx-auto flex h-14 max-w-6xl items-center justify-between rounded-full px-5">
-        <Link href="/" className="flex items-center gap-2.5">
+        <Link href="/" className="flex items-center gap-3">
           <img
             src="/logo.jpeg"
             alt=""
-            className="h-7 w-7 rounded-sm object-contain invert"
+            className="h-9 w-9 rounded-sm object-contain invert"
           />
           <span className="font-display text-xl tracking-tightest text-ink">
-            asd<span className="italic text-moss">specials</span>
+            ASD <span className="italic text-moss">Specials</span>
           </span>
         </Link>
 

@@ -3,7 +3,7 @@ import { Cart } from "@/components/sections/Cart"
 import { Footer } from "@/components/sections/Footer"
 
 export const metadata = {
-  title: "Tu carrito — asdspecials",
+  title: "Tu carrito — ASD Specials",
 }
 
 export default function CarritoPage() {

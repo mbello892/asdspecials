@@ -10,7 +10,7 @@ import { formatPrice } from "@/lib/format"
 export const dynamic = "force-dynamic"
 
 export const metadata = {
-  title: "Gracias por tu pedido — asdspecials",
+  title: "Gracias por tu pedido — ASD Specials",
 }
 
 type Params = { params: Promise<{ id: string }> }

@@ -6,7 +6,7 @@ import { CheckoutForm } from "@/components/checkout/CheckoutForm"
 import { getSiteContent } from "@/lib/payload"
 
 export const metadata = {
-  title: "Finalizar compra — asdspecials",
+  title: "Finalizar compra — ASD Specials",
 }
 
 export const dynamic = "force-dynamic"

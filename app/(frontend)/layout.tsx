@@ -17,7 +17,7 @@ const fraunces = Fraunces({
 })
 
 export const metadata: Metadata = {
-  title: "asdspecials — Plantas y macetas de aluminio",
+  title: "ASD Specials — Plantas y macetas de aluminio",
   description:
     "Plantas de interior seleccionadas a mano y macetas de aluminio cepillado hechas para durar. Envío cuidado a todo el país.",
 }

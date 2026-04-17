@@ -2,7 +2,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="min-h-screen flex flex-col">
       <header className="border-b px-4 py-3">
-        <nav>asdspecials</nav>
+        <nav>ASD Specials</nav>
       </header>
       <main className="flex-1 p-4">{children}</main>
     </div>
