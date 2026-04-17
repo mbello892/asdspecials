@@ -21,7 +21,7 @@ export function Navbar() {
             className="h-9 w-9 rounded-sm object-contain invert"
           />
           <span className="font-display text-xl tracking-tightest text-ink">
-            ASD <span className="italic text-moss">Specials</span>
+asd <span className="italic text-moss">specials</span>
           </span>
         </Link>
 

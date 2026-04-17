@@ -38,7 +38,7 @@ export function Footer({ data }: { data?: FooterData | null }) {
         <div className="grid grid-cols-2 gap-10 md:grid-cols-5">
           <div className="col-span-2">
             <p className="font-display text-3xl tracking-tightest text-ink">
-              ASD <span className="italic text-moss">Specials</span>
+asd <span className="italic text-moss">specials</span>
             </p>
             <p className="mt-4 max-w-sm text-sm leading-6 text-ink-soft">{tagline}</p>
           </div>
@@ -83,7 +83,7 @@ export function Footer({ data }: { data?: FooterData | null }) {
         </div>
 
         <div className="mt-16 flex flex-col items-start justify-between gap-4 border-t border-line-soft pt-6 text-xs text-ink-dim md:flex-row md:items-center">
-          <p>© {new Date().getFullYear()} ASD Specials — Todos los derechos reservados.</p>
+          <p>© {new Date().getFullYear()} asd specials — Todos los derechos reservados.</p>
           <p>Plantas sanas, macetas para toda la vida.</p>
         </div>
       </div>
