@@ -51,6 +51,7 @@ export function HomeLive({
         categories={categories}
         productCounts={productCounts}
         introTitle={data.collectionsIntro?.title}
+        textTones={data.categoryTextTones}
       />
       <FeaturedProduct product={featuredProduct} />
       <Story pillars={data.pillars} intro={data.storyIntro} />

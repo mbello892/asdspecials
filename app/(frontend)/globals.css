@@ -6,7 +6,9 @@
   /* ── COLORS (OKLCH) ─ Dark botanical copper ─ */
   --bg:           oklch(7% 0.005 50);      /* near-black warm */
   --bg-deep:      oklch(4% 0.003 40);      /* deepest black */
-  --surface:      oklch(14% 0.020 55);     /* dark chocolate card */
+  --surface:      oklch(14% 0.020 55);     /* legacy — kept for backward compat */
+  --surface-concrete: oklch(17% 0.005 55); /* hormigón oscuro, gris neutro cálido */
+  --surface-wood: oklch(19% 0.028 58);     /* madera clara, warmth sin cuero oscuro */
   --ink:          oklch(90% 0.012 70);     /* warm cream, no peach */
   --ink-soft:     oklch(68% 0.010 65);
   --ink-dim:      oklch(46% 0.008 60);     /* warm gray */

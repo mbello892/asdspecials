@@ -80,7 +80,7 @@ export default async function PagoPage({
 
       <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-12">
         <section className="lg:col-span-7">
-          <div className="rounded-[var(--r-lg)] border border-line bg-surface p-7">
+          <div className="rounded-[var(--r-lg)] border border-line bg-surface-concrete p-7">
             <div className="mb-6 flex items-start gap-3">
               <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-moss/40 bg-moss/10 text-moss">
                 <ShieldCheck className="h-5 w-5" strokeWidth={1.8} />
@@ -115,7 +115,7 @@ export default async function PagoPage({
         </section>
 
         <aside className="lg:col-span-5">
-          <div className="rounded-[var(--r-lg)] border border-line bg-surface p-7">
+          <div className="rounded-[var(--r-lg)] border border-line bg-surface-concrete p-7">
             <h2 className="font-display text-2xl text-ink">Tu pedido</h2>
             <ul className="mt-5 space-y-4">
               {order.line_items.map((item) => (

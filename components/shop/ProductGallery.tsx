@@ -112,7 +112,7 @@ export function ProductGallery({ images, name }: Props) {
         >
           <button
             aria-label="Cerrar"
-            className="absolute right-5 top-5 rounded-full bg-surface p-2 text-ink transition-colors hover:bg-line"
+            className="absolute right-5 top-5 rounded-full bg-surface-wood p-2 text-ink transition-colors hover:bg-line"
             onClick={() => setLightbox(false)}
           >
             <X className="h-5 w-5" strokeWidth={1.5} />
@@ -122,7 +122,7 @@ export function ProductGallery({ images, name }: Props) {
             <>
               <button
                 aria-label="Foto anterior"
-                className="absolute left-5 top-1/2 -translate-y-1/2 rounded-full bg-surface p-3 text-ink transition-colors hover:bg-line"
+                className="absolute left-5 top-1/2 -translate-y-1/2 rounded-full bg-surface-wood p-3 text-ink transition-colors hover:bg-line"
                 onClick={(e) => {
                   e.stopPropagation()
                   prev()
@@ -132,7 +132,7 @@ export function ProductGallery({ images, name }: Props) {
               </button>
               <button
                 aria-label="Foto siguiente"
-                className="absolute right-5 top-1/2 -translate-y-1/2 rounded-full bg-surface p-3 text-ink transition-colors hover:bg-line"
+                className="absolute right-5 top-1/2 -translate-y-1/2 rounded-full bg-surface-wood p-3 text-ink transition-colors hover:bg-line"
                 onClick={(e) => {
                   e.stopPropagation()
                   next()

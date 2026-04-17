@@ -140,7 +140,7 @@ export function MPCardPayment({
 
       {submitting && (
         <div className="pointer-events-none absolute inset-0 grid place-items-center rounded-[var(--r-md)] bg-bg/60 backdrop-blur-sm">
-          <div className="flex items-center gap-3 rounded-full bg-surface px-5 py-3 text-sm text-ink shadow-lg">
+          <div className="flex items-center gap-3 rounded-full bg-surface-concrete px-5 py-3 text-sm text-ink shadow-lg">
             <span className="h-2 w-2 animate-pulse rounded-full bg-moss" />
             Procesando pago…
           </div>

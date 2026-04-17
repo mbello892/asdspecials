@@ -150,7 +150,7 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
 
   if (items.length === 0) {
     return (
-      <div className="rounded-[var(--r-lg)] border border-line-soft bg-surface p-10 text-center">
+      <div className="rounded-[var(--r-lg)] border border-line-soft bg-surface-concrete p-10 text-center">
         <p className="font-display text-2xl text-ink">Tu carrito está vacío</p>
         <p className="mt-2 text-sm text-ink-soft">
           No podés finalizar una compra sin productos.
@@ -334,7 +334,7 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
 
       <aside className="lg:col-span-5">
         <div className="lg:sticky lg:top-28">
-          <div className="rounded-[var(--r-lg)] border border-line bg-surface p-7">
+          <div className="rounded-[var(--r-lg)] border border-line bg-surface-concrete p-7">
             <h2 className="font-display text-2xl text-ink">Tu pedido</h2>
             <ul className="mt-5 space-y-4">
               {items.map((item) => (
@@ -453,8 +453,8 @@ function PaymentOption({
       aria-pressed={selected}
       className={`w-full rounded-[var(--r-lg)] border-2 p-6 text-left transition-colors ${
         selected
-          ? "border-ink bg-surface"
-          : "border-line-soft bg-surface/40 hover:border-line"
+          ? "border-ink bg-surface-concrete"
+          : "border-line-soft bg-surface-concrete/40 hover:border-line"
       }`}
     >
       <div className="flex items-start justify-between gap-4">

@@ -30,7 +30,7 @@ export function Newsletter({ data }: { data?: NewsletterData | null }) {
         </h2>
         <p className="mx-auto mt-6 max-w-lg text-base leading-7 text-ink-soft">{body}</p>
 
-        <form className="mx-auto mt-10 flex max-w-md items-center gap-2 rounded-full border border-line bg-surface p-1.5 pl-5 shadow-[0_1px_0_oklch(22%_0.015_50)]">
+        <form className="mx-auto mt-10 flex max-w-md items-center gap-2 rounded-full border border-line bg-surface-wood p-1.5 pl-5 shadow-[0_1px_0_oklch(22%_0.015_50)]">
           <input
             type="email"
             required

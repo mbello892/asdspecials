@@ -89,7 +89,7 @@ function MethodTab({
       className={[
         "group flex items-center gap-3 rounded-full px-4 py-3 text-left transition-colors",
         active
-          ? "bg-surface text-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+          ? "bg-surface-concrete text-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
           : "text-ink-soft hover:text-ink",
       ].join(" ")}
     >

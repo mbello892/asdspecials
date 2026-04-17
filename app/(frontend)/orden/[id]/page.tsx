@@ -99,7 +99,7 @@ export default async function OrderPage({ params }: Params) {
             Seguir explorando
           </Link>
 
-          <div className="mb-10 rounded-[var(--r-lg)] border border-line bg-surface p-8 md:p-10">
+          <div className="mb-10 rounded-[var(--r-lg)] border border-line bg-surface-concrete p-8 md:p-10">
             <div className="flex items-start gap-4">
               <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-moss/15 text-moss">
                 <CircleCheck className="h-7 w-7" strokeWidth={1.8} />
@@ -122,7 +122,7 @@ export default async function OrderPage({ params }: Params) {
           <div className="grid grid-cols-1 gap-8 md:grid-cols-12">
             <div className="md:col-span-7">
               {/* Items */}
-              <div className="rounded-[var(--r-lg)] border border-line bg-surface p-6">
+              <div className="rounded-[var(--r-lg)] border border-line bg-surface-concrete p-6">
                 <p className="mb-5 text-[11px] uppercase tracking-[0.22em] text-ink-dim">
                   — Productos
                 </p>
@@ -171,7 +171,7 @@ export default async function OrderPage({ params }: Params) {
               </div>
 
               {/* Shipping */}
-              <div className="mt-6 rounded-[var(--r-lg)] border border-line bg-surface p-6">
+              <div className="mt-6 rounded-[var(--r-lg)] border border-line bg-surface-concrete p-6">
                 <p className="mb-4 text-[11px] uppercase tracking-[0.22em] text-ink-dim">
                   — Envío a
                 </p>
@@ -216,7 +216,7 @@ export default async function OrderPage({ params }: Params) {
                 </div>
               )}
 
-              <div className="mt-4 rounded-[var(--r-lg)] border border-line-soft bg-surface p-5 text-sm text-ink-soft">
+              <div className="mt-4 rounded-[var(--r-lg)] border border-line-soft bg-surface-concrete p-5 text-sm text-ink-soft">
                 <div className="mb-2 flex items-center gap-2 text-ink">
                   <Mail className="h-4 w-4" strokeWidth={1.8} />
                   <p className="text-[11px] uppercase tracking-[0.18em]">Mails</p>

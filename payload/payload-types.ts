@@ -413,6 +413,10 @@ export interface SiteContent {
      * Texto corto en mayúsculas, tipo 'Stock limitado' o 'Edición 12/12'.
      */
     mainImageTag?: string | null;
+    /**
+     * Si el nombre y la etiqueta no se leen bien sobre la foto, cambiá al tono opuesto.
+     */
+    imageTextTone?: ('dark' | 'light') | null;
     sideCard?: {
       image?: (number | null) | Media;
       label?: string | null;
@@ -438,6 +442,19 @@ export interface SiteContent {
      */
     title?: string | null;
   };
+  /**
+   * Por defecto el nombre de la categoría se muestra en tono claro. Si cargás una imagen clara, agregá una fila con el slug de la categoría (ej: 'velas-soja') y elegí 'Oscuro' para que el texto se lea. Solo necesitás entradas para las categorías que no contrastan.
+   */
+  categoryTextTones?:
+    | {
+        /**
+         * El slug tal como aparece en WooCommerce (ej: 'plantas', 'macetas', 'velas-soja'). Todo en minúsculas y con guiones.
+         */
+        slug: string;
+        tone: 'dark' | 'light';
+        id?: string | null;
+      }[]
+    | null;
   storyIntro?: {
     title?: string | null;
     body?: string | null;
@@ -502,6 +519,7 @@ export interface SiteContentSelect<T extends boolean = true> {
         mainImage?: T;
         mainImageCaption?: T;
         mainImageTag?: T;
+        imageTextTone?: T;
         sideCard?:
           | T
           | {
@@ -527,6 +545,13 @@ export interface SiteContentSelect<T extends boolean = true> {
     | T
     | {
         title?: T;
+      };
+  categoryTextTones?:
+    | T
+    | {
+        slug?: T;
+        tone?: T;
+        id?: T;
       };
   storyIntro?:
     | T

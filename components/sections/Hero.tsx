@@ -66,6 +66,7 @@ export function Hero({ data }: { data?: HeroData }) {
   )
   const mainCaption = data?.mainImageCaption || DEFAULTS.mainImageCaption
   const mainTag = data?.mainImageTag || DEFAULTS.mainImageTag
+  const isLightText = data?.imageTextTone === "light"
   const sideImgUrl = mediaUrl(data?.sideCard?.image, DEFAULTS.sideCardImage)
   const sideLabel = data?.sideCard?.label || DEFAULTS.sideCardLabel
   const sideValue = data?.sideCard?.value || DEFAULTS.sideCardValue
@@ -147,9 +148,27 @@ export function Hero({ data }: { data?: HeroData }) {
               alt={mainImgAlt}
               className="h-full w-full object-cover"
             />
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/45 via-ink/10 to-transparent p-6">
-              <p className="font-display text-xl italic text-bg">{mainCaption}</p>
-              <p className="text-xs uppercase tracking-[0.18em] text-bg/80">{mainTag}</p>
+            <div
+              className={`absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t ${
+                isLightText
+                  ? "from-bg/85 via-bg/35 to-transparent"
+                  : "from-ink/45 via-ink/10 to-transparent"
+              }`}
+            >
+              <p
+                className={`font-display text-xl italic ${
+                  isLightText ? "text-ink" : "text-bg"
+                }`}
+              >
+                {mainCaption}
+              </p>
+              <p
+                className={`text-xs uppercase tracking-[0.18em] ${
+                  isLightText ? "text-ink/85" : "text-bg/80"
+                }`}
+              >
+                {mainTag}
+              </p>
             </div>
           </div>
         </div>

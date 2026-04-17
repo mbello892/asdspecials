@@ -8,6 +8,8 @@ const config: Config = {
         bg: 'var(--bg)',
         'bg-deep': 'var(--bg-deep)',
         surface: 'var(--surface)',
+        'surface-concrete': 'var(--surface-concrete)',
+        'surface-wood': 'var(--surface-wood)',
         ink: 'var(--ink)',
         'ink-soft': 'var(--ink-soft)',
         'ink-dim': 'var(--ink-dim)',

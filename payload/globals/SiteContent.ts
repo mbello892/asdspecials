@@ -108,6 +108,20 @@ export const SiteContent: GlobalConfig = {
                   },
                 },
                 {
+                  name: "imageTextTone",
+                  type: "select",
+                  label: "Color del texto sobre la imagen",
+                  defaultValue: "dark",
+                  options: [
+                    { label: "Oscuro — para imágenes claras", value: "dark" },
+                    { label: "Claro — para imágenes oscuras", value: "light" },
+                  ],
+                  admin: {
+                    description:
+                      "Si el nombre y la etiqueta no se leen bien sobre la foto, cambiá al tono opuesto.",
+                  },
+                },
+                {
                   name: "sideCard",
                   type: "group",
                   label: "Card flotante (esquina inferior izquierda)",
@@ -190,6 +204,39 @@ export const SiteContent: GlobalConfig = {
                     description:
                       "Usá *asteriscos* para itálica verde. Apretá Enter para saltar de línea.",
                   },
+                },
+              ],
+            },
+            {
+              name: "categoryTextTones",
+              type: "array",
+              label: "Color del texto sobre cada categoría",
+              labels: { singular: "Override", plural: "Overrides" },
+              admin: {
+                description:
+                  "Por defecto el nombre de la categoría se muestra en tono claro. Si cargás una imagen clara, agregá una fila con el slug de la categoría (ej: 'velas-soja') y elegí 'Oscuro' para que el texto se lea. Solo necesitás entradas para las categorías que no contrastan.",
+              },
+              fields: [
+                {
+                  name: "slug",
+                  type: "text",
+                  required: true,
+                  label: "Slug de la categoría",
+                  admin: {
+                    description:
+                      "El slug tal como aparece en WooCommerce (ej: 'plantas', 'macetas', 'velas-soja'). Todo en minúsculas y con guiones.",
+                  },
+                },
+                {
+                  name: "tone",
+                  type: "select",
+                  required: true,
+                  label: "Color del texto",
+                  defaultValue: "dark",
+                  options: [
+                    { label: "Oscuro — para imágenes claras", value: "dark" },
+                    { label: "Claro — para imágenes oscuras", value: "light" },
+                  ],
                 },
               ],
             },

@@ -24,7 +24,7 @@ export function CartNavButton() {
     <Link
       href="/carrito"
       aria-label={count > 0 ? `Carrito — ${count} productos` : "Carrito"}
-      className="relative rounded-full p-2 text-ink-soft transition-colors hover:text-ink"
+      className="relative inline-flex items-center justify-center rounded-full p-2 text-ink-soft transition-colors hover:text-ink"
     >
       <span className={`relative inline-flex ${bump ? "cart-bump" : ""}`}>
         <ShoppingBag className="h-[18px] w-[18px]" strokeWidth={1.6} />

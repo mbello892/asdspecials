@@ -29,17 +29,27 @@ function getImageUrl(cat: CategoryWithImage): string {
   return cat.image?.url || FALLBACK_IMAGE[cat.slug] || FALLBACK_IMAGE.default
 }
 
+type CategoryTextTone = "dark" | "light"
+type CategoryTextToneOverride = { slug: string; tone: CategoryTextTone }
+
 export function Collections({
   categories,
   productCounts,
   introTitle,
+  textTones,
 }: {
   categories: Category[]
   productCounts?: Record<string, number>
   introTitle?: string | null
+  textTones?: CategoryTextToneOverride[] | null
 }) {
   const list = categories.slice(0, 3) as CategoryWithImage[]
   const title = introTitle || DEFAULT_INTRO_TITLE
+  const toneBySlug = new Map<string, CategoryTextTone>(
+    (textTones ?? [])
+      .filter((t) => t && t.slug)
+      .map((t) => [t.slug.trim().toLowerCase(), t.tone]),
+  )
 
   return (
     <section id="plantas" className="relative px-6 py-28 md:py-36">
@@ -74,6 +84,8 @@ export function Collections({
           <div className="grid auto-rows-[1fr] grid-cols-1 gap-5 md:grid-cols-12 md:grid-rows-2">
             {list.map((c, i) => {
               const count = productCounts?.[c.slug] ?? 0
+              const tone = toneBySlug.get(c.slug?.toLowerCase?.() ?? "") ?? "dark"
+              const isLight = tone === "light"
               return (
                 <Link
                   key={c.id}
@@ -85,19 +97,39 @@ export function Collections({
                     alt={c.name}
                     className="h-full w-full object-cover transition-transform duration-[var(--dur-slow)] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-ink/10 to-transparent" />
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-t ${
+                      isLight
+                        ? "from-bg/70 via-bg/20 to-transparent"
+                        : "from-ink/60 via-ink/10 to-transparent"
+                    }`}
+                  />
                   <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6 md:p-8">
                     <div>
-                      <p className="text-[11px] uppercase tracking-[0.18em] text-bg/75">
+                      <p
+                        className={`text-[11px] uppercase tracking-[0.18em] ${
+                          isLight ? "text-ink/75" : "text-bg/75"
+                        }`}
+                      >
                         {count > 0
                           ? `${count} ${count === 1 ? "pieza" : "piezas"}`
                           : "Nueva categoría"}
                       </p>
-                      <h3 className="mt-1 font-display text-2xl text-bg md:text-3xl">
+                      <h3
+                        className={`mt-1 font-display text-2xl md:text-3xl ${
+                          isLight ? "text-ink" : "text-bg"
+                        }`}
+                      >
                         {c.name}
                       </h3>
                       {c.description && (
-                        <p className="mt-2 max-w-xs text-sm text-bg/80">{c.description}</p>
+                        <p
+                          className={`mt-2 max-w-xs text-sm ${
+                            isLight ? "text-ink/80" : "text-bg/80"
+                          }`}
+                        >
+                          {c.description}
+                        </p>
                       )}
                     </div>
                     <div className="glass grid h-11 w-11 shrink-0 place-items-center rounded-full">
@@ -110,7 +142,7 @@ export function Collections({
           </div>
         )}
 
-        <div className="reveal brushed mt-5 grid grid-cols-1 overflow-hidden rounded-[var(--r-lg)] border border-line-soft bg-surface md:grid-cols-12">
+        <div className="reveal brushed mt-5 grid grid-cols-1 overflow-hidden rounded-[var(--r-lg)] border border-line-soft bg-surface-wood md:grid-cols-12">
           <div className="flex flex-col justify-between gap-6 p-8 md:col-span-7 md:p-10">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-line px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-ink-soft">

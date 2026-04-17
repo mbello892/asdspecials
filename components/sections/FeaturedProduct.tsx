@@ -15,7 +15,7 @@ export function FeaturedProduct({ product }: { product: Product | null }) {
   if (!product) {
     return (
       <section className="relative px-6 py-24 md:py-32">
-        <div className="mx-auto max-w-6xl rounded-[var(--r-lg)] border border-dashed border-line bg-surface p-14 text-center">
+        <div className="mx-auto max-w-6xl rounded-[var(--r-lg)] border border-dashed border-line bg-surface-wood p-14 text-center">
           <p className="text-[11px] uppercase tracking-[0.22em] text-ink-dim">— Planta del mes</p>
           <h2 className="mt-4 font-display text-3xl leading-[0.98] tracking-tightest text-ink">
             Marcá un producto como <span className="italic text-moss">destacado</span>

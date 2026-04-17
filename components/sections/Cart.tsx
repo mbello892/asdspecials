@@ -67,7 +67,7 @@ export function Cart() {
           {/* Line items */}
           <div className="lg:col-span-7">
             {items.length === 0 ? (
-              <div className="rounded-[var(--r-lg)] border border-line-soft bg-surface p-10 text-center">
+              <div className="rounded-[var(--r-lg)] border border-line-soft bg-surface-concrete p-10 text-center">
                 <p className="font-display text-2xl text-ink">Tu carrito está vacío</p>
                 <p className="mt-2 text-sm text-ink-soft">
                   Volvé al catálogo y sumá algo que te guste.
@@ -127,7 +127,7 @@ export function Cart() {
                       </div>
 
                       <div className="mt-auto flex items-end justify-between pt-4">
-                        <div className="inline-flex items-center gap-1 rounded-full border border-line bg-surface p-1">
+                        <div className="inline-flex items-center gap-1 rounded-full border border-line bg-surface-concrete p-1">
                           <button
                             onClick={() => updateQty(item.productId, -1)}
                             disabled={item.quantity <= 1}
@@ -170,7 +170,7 @@ export function Cart() {
           {/* Summary */}
           <aside className="lg:col-span-5">
             <div className="lg:sticky lg:top-28">
-              <div className="brushed rounded-[var(--r-lg)] border border-line bg-surface p-7 shadow-[0_1px_0_oklch(22%_0.015_50)]">
+              <div className="brushed rounded-[var(--r-lg)] border border-line bg-surface-concrete p-7 shadow-[0_1px_0_oklch(22%_0.015_50)]">
                 <h2 className="font-display text-2xl text-ink">Resumen del pedido</h2>
 
                 <dl className="mt-6 space-y-3 text-sm">

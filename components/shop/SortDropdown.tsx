@@ -62,7 +62,7 @@ export function SortDropdown({
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-2 min-w-[200px] overflow-hidden rounded-[var(--r)] border border-line bg-surface shadow-lg">
+        <div className="absolute right-0 top-full z-50 mt-2 min-w-[200px] overflow-hidden rounded-[var(--r)] border border-line bg-surface-wood shadow-lg">
           {OPTIONS.map((opt) => {
             const active = opt.value === current
             return (
