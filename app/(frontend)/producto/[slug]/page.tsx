@@ -150,27 +150,30 @@ export default async function ProductPage({ params }: Params) {
                 </ul>
               )}
 
-              <div className="mt-10 flex items-end justify-between gap-6 border-t border-line-soft pt-6">
-                <div>
-                  <p className="text-[11px] uppercase tracking-[0.18em] text-ink-dim">Precio</p>
+              <div className="mt-10 border-t border-line-soft pt-8">
+                <p className="text-[10px] uppercase tracking-[0.24em] text-ink-dim">
+                  {soldOut
+                    ? "Sin stock"
+                    : product.stock <= 3
+                      ? `Últimas ${product.stock} unidades`
+                      : "Stock disponible"}
+                </p>
+
+                <div className="mt-4 flex items-baseline gap-4">
+                  <p className="inline-flex items-baseline gap-2 whitespace-nowrap font-display text-5xl leading-none text-ink">
+                    <span>$</span>
+                    <span>{new Intl.NumberFormat("es-AR").format(product.price)}</span>
+                  </p>
                   {product.compareAtPrice &&
                     product.compareAtPrice > product.price && (
-                      <p className="text-sm text-ink-dim line-through">
+                      <p className="text-base text-ink-dim line-through">
                         $ {new Intl.NumberFormat("es-AR").format(product.compareAtPrice)}
                       </p>
                     )}
-                  <p className="mt-1 font-display text-3xl leading-none text-ink">
-                    <span className="mr-0.5 align-super text-base font-normal opacity-60">$</span>
-                    {new Intl.NumberFormat("es-AR").format(product.price)}
-                  </p>
-                  <p className="mt-1 text-xs text-ink-dim">
-                    {soldOut
-                      ? "Sin stock"
-                      : product.stock <= 3
-                        ? `Quedan ${product.stock}`
-                        : `Stock disponible`}
-                  </p>
                 </div>
+
+                <div className="my-8 h-px bg-line-soft" />
+
                 <AddToCartButton product={product} />
               </div>
 

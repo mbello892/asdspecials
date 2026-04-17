@@ -22,6 +22,7 @@ export type CartItem = {
 type CartState = {
   items: CartItem[]
   hydrated: boolean
+  lastAddedAt: number | null
   addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void
   removeItem: (productId: number) => void
   updateQty: (productId: number, delta: number) => void
@@ -35,6 +36,7 @@ export const useCartStore = create<CartState>()(
     (set, get) => ({
       items: [],
       hydrated: false,
+      lastAddedAt: null,
       addItem: (item, quantity = 1) => {
         const existing = get().items.find((i) => i.productId === item.productId)
         if (existing) {
@@ -43,12 +45,16 @@ export const useCartStore = create<CartState>()(
             items: get().items.map((i) =>
               i.productId === item.productId ? { ...i, quantity: nextQty } : i,
             ),
+            lastAddedAt: Date.now(),
           })
           return
         }
         const qty = Math.min(quantity, item.stock || Infinity)
         if (qty <= 0) return
-        set({ items: [...get().items, { ...item, quantity: qty }] })
+        set({
+          items: [...get().items, { ...item, quantity: qty }],
+          lastAddedAt: Date.now(),
+        })
       },
       removeItem: (productId) =>
         set({ items: get().items.filter((i) => i.productId !== productId) }),

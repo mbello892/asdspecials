@@ -8,15 +8,14 @@ import type { Product } from "@/types/shop"
 
 export function AddToCartButton({ product }: { product: Product }) {
   const addItem = useCartStore((s) => s.addItem)
+  const removeItem = useCartStore((s) => s.removeItem)
   const items = useCartStore((s) => s.items)
   const hydrated = useCartStore((s) => s.hydrated)
 
   const [qty, setQty] = useState(1)
+  const [justAdded, setJustAdded] = useState(false)
   const soldOut = product.stock === 0
 
-  // Client render guard: mientras Zustand no hidrató, hacemos render
-  // conservador (como si no hubiera items en el carrito) para evitar
-  // mismatch de hydration.
   const inCart = hydrated
     ? items.find((i) => i.productId === product.id) ?? null
     : null
@@ -38,6 +37,8 @@ export function AddToCartButton({ product }: { product: Product }) {
       qty,
     )
     setQty(1)
+    setJustAdded(true)
+    setTimeout(() => setJustAdded(false), 1800)
   }
 
   if (soldOut) {
@@ -45,7 +46,7 @@ export function AddToCartButton({ product }: { product: Product }) {
       <button
         type="button"
         disabled
-        className="inline-flex cursor-not-allowed items-center gap-2 rounded-full bg-ink/40 px-6 py-3.5 text-sm font-medium text-bg"
+        className="h-14 w-full cursor-not-allowed rounded-full border border-line text-[11px] font-medium uppercase tracking-[0.22em] text-ink-dim"
       >
         Agotado
       </button>
@@ -53,20 +54,23 @@ export function AddToCartButton({ product }: { product: Product }) {
   }
 
   return (
-    <div className="flex flex-col items-end gap-3">
-      {/* Qty stepper + boton */}
-      <div className="flex items-center gap-3">
-        <div className="inline-flex items-center gap-1 rounded-full border border-line bg-surface p-1">
+    <div className="space-y-6">
+      {/* Quantity — labeled row, minimal icons */}
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] uppercase tracking-[0.24em] text-ink-dim">
+          Cantidad
+        </span>
+        <div className="inline-flex items-center gap-6">
           <button
             type="button"
             onClick={() => setQty((q) => Math.max(1, q - 1))}
             disabled={qty <= 1}
             aria-label="Disminuir"
-            className="grid h-8 w-8 place-items-center rounded-full text-ink transition-colors hover:bg-bg-deep disabled:cursor-not-allowed disabled:text-ink-dim"
+            className="text-ink-soft transition-colors hover:text-ink disabled:cursor-not-allowed disabled:text-ink-dim/50"
           >
-            <Minus className="h-3.5 w-3.5" strokeWidth={1.8} />
+            <Minus className="h-4 w-4" strokeWidth={1.5} />
           </button>
-          <span className="min-w-6 text-center text-sm font-medium tabular-nums text-ink">
+          <span className="min-w-[2ch] text-center font-display text-base leading-none tabular-nums text-ink">
             {qty}
           </span>
           <button
@@ -74,35 +78,64 @@ export function AddToCartButton({ product }: { product: Product }) {
             onClick={() => setQty((q) => Math.min(max - (inCart?.quantity ?? 0), q + 1))}
             disabled={qty + (inCart?.quantity ?? 0) >= max}
             aria-label="Aumentar"
-            className="grid h-8 w-8 place-items-center rounded-full text-ink transition-colors hover:bg-bg-deep disabled:cursor-not-allowed disabled:text-ink-dim"
+            className="text-ink-soft transition-colors hover:text-ink disabled:cursor-not-allowed disabled:text-ink-dim/50"
           >
-            <Plus className="h-3.5 w-3.5" strokeWidth={1.8} />
+            <Plus className="h-4 w-4" strokeWidth={1.5} />
           </button>
         </div>
-
-        <button
-          type="button"
-          onClick={handleAdd}
-          disabled={!canAdd}
-          className="group inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 text-sm font-medium text-bg transition-transform hover:-translate-y-[1px] disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          {inCart ? "Sumar al carrito" : "Agregar al carrito"}
-          <ArrowUpRight
-            className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-            strokeWidth={1.8}
-          />
-        </button>
       </div>
 
-      {/* Estado "en el carrito" */}
-      {inCart && (
-        <Link
-          href="/carrito"
-          className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] text-moss transition-colors hover:text-ink"
+      {/* Full-width CTA */}
+      <button
+        type="button"
+        onClick={handleAdd}
+        disabled={!canAdd || justAdded}
+        aria-live="polite"
+        className={`group flex h-14 w-full items-center justify-center gap-3 overflow-hidden rounded-full text-[11px] font-medium uppercase tracking-[0.22em] transition-all duration-300 disabled:cursor-not-allowed ${
+          justAdded
+            ? "bg-moss text-bg"
+            : "bg-ink text-bg hover:-translate-y-[1px] disabled:opacity-40"
+        }`}
+      >
+        <span
+          key={justAdded ? "done" : "idle"}
+          className="inline-flex items-center gap-3 animate-[fade-in_220ms_ease-out]"
         >
-          <Check className="h-3.5 w-3.5" strokeWidth={2} />
-          En el carrito ({inCart.quantity}) — ver
-        </Link>
+          {justAdded ? (
+            <>
+              <Check className="h-4 w-4" strokeWidth={2} />
+              Añadido
+            </>
+          ) : (
+            <>
+              {inCart ? "Sumar al carrito" : "Agregar al carrito"}
+              <ArrowUpRight
+                className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                strokeWidth={1.5}
+              />
+            </>
+          )}
+        </span>
+      </button>
+
+      {/* Cart status — single ephemeral line */}
+      {inCart && (
+        <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.22em] text-ink-dim">
+          <Check className="h-3 w-3 text-moss" strokeWidth={2.2} />
+          <span>En el carrito · {inCart.quantity}</span>
+          <span className="text-line">/</span>
+          <Link href="/carrito" className="transition-colors hover:text-ink">
+            Ver carrito
+          </Link>
+          <span className="text-line">/</span>
+          <button
+            type="button"
+            onClick={() => removeItem(product.id)}
+            className="transition-colors hover:text-ink"
+          >
+            Quitar
+          </button>
+        </div>
       )}
     </div>
   )
