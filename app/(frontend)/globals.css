@@ -24,7 +24,7 @@
 
   /* ── TYPOGRAPHY ──────────────────────────────────── */
   --font-sans:    var(--font-inter), system-ui, sans-serif;
-  --font-display: var(--font-playfair), Georgia, serif;
+  --font-display: var(--font-special-elite), "Courier New", monospace;
 
   /* ── RADIUS ──────────────────────────────────────── */
   --r-xs:   0.25rem;
@@ -66,9 +66,9 @@ body::before {
 
 ::selection { background: var(--moss); color: var(--bg); }
 
-/* Playfair Display — serif clásica, contraste alto entre trazos */
+/* Special Elite — typewriter personality, no variable axes */
 .font-display {
-  font-feature-settings: "liga", "kern";
+  letter-spacing: 0.01em;
 }
 
 /* ── Liquid glass on cool neutral (subtle, precise) ─ */

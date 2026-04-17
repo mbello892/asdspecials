@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Inter, Playfair_Display } from "next/font/google"
+import { Inter, Special_Elite } from "next/font/google"
 import "./globals.css"
 
 const inter = Inter({
@@ -8,11 +8,10 @@ const inter = Inter({
   display: "swap",
 })
 
-const playfair = Playfair_Display({
+const specialElite = Special_Elite({
   subsets: ["latin"],
-  variable: "--font-playfair",
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
+  variable: "--font-special-elite",
+  weight: "400",
   display: "swap",
 })
 
@@ -28,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es" className={`${inter.variable} ${playfair.variable}`}>
+    <html lang="es" className={`${inter.variable} ${specialElite.variable}`}>
       <body className="min-h-screen antialiased">{children}</body>
     </html>
   )
