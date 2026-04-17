@@ -54,7 +54,12 @@ export async function POST(req: Request) {
     })
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Error procesando pago"
-    console.error("[payments/mp] error:", msg)
+    const cause = err instanceof Error ? (err as Error & { cause?: unknown }).cause : undefined
+    console.error("[payments/mp] error:", {
+      msg,
+      cause: cause ? JSON.stringify(cause).slice(0, 800) : undefined,
+      stack: err instanceof Error ? err.stack?.slice(0, 500) : undefined,
+    })
     return NextResponse.json({ error: msg }, { status: 500 })
   }
 }
