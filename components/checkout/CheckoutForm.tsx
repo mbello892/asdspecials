@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { Loader2, Banknote, CircleCheck, ArrowRight, AlertTriangle } from "lucide-react"
+import { Loader2, Banknote, CreditCard, CircleCheck, ArrowRight, AlertTriangle } from "lucide-react"
 import { useCartStore, selectSubtotal } from "@/lib/cart-store"
 import { formatPrice } from "@/lib/format"
 
@@ -42,6 +42,8 @@ const INITIAL_BILLING: BillingForm = {
   notes: "",
 }
 
+type PaymentMethod = "bacs" | "mp"
+
 type SyncWarning =
   | { type: "removed"; productId: number; name: string }
   | { type: "clamped"; productId: number; name: string; from: number; to: number }
@@ -58,6 +60,7 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
   const subtotal = useCartStore(selectSubtotal)
 
   const [billing, setBilling] = useState<BillingForm>(INITIAL_BILLING)
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("bacs")
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [warnings, setWarnings] = useState<SyncWarning[]>([])
@@ -68,8 +71,6 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
     setBilling((prev) => ({ ...prev, [key]: value }))
   }
 
-  // Sync contra WC al entrar al checkout: productos borrados, stock bajado,
-  // precios cambiados. Corre UNA vez por mount despues de hidratar.
   useEffect(() => {
     if (!hydrated || hasValidated.current) return
     const snapshot = useCartStore.getState().items
@@ -134,11 +135,16 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
         setValidating(false)
       }
     })()
-    // Solo dependemos de hydrated; el ref guard impide re-runs.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hydrated])
 
   if (!hydrated) {
+    return <div className="h-32 animate-pulse rounded bg-bg-deep" />
+  }
+
+  // Evita el flash de "carrito vacio" entre que clear() dispara y la navegacion
+  // a /checkout/pago o /orden se consolida.
+  if (items.length === 0 && submitting) {
     return <div className="h-32 animate-pulse rounded bg-bg-deep" />
   }
 
@@ -175,7 +181,7 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
             quantity: i.quantity,
           })),
           billing,
-          paymentMethod: "bacs",
+          paymentMethod,
         }),
       })
       const data = await res.json()
@@ -185,6 +191,10 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
         return
       }
       clear()
+      if (paymentMethod === "mp" && data.preferenceId) {
+        router.push(`/checkout/pago/${data.id}?pref=${data.preferenceId}`)
+        return
+      }
       router.push(`/orden/${data.id}`)
     } catch (err) {
       setError("Error de red. Revisá tu conexión e intentá de nuevo.")
@@ -194,7 +204,6 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
 
   return (
     <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-10 lg:grid-cols-12">
-      {/* Left column: billing + payment */}
       <div className="space-y-10 lg:col-span-7">
         {warnings.length > 0 && (
           <div className="rounded-[var(--r)] border border-wood-deep bg-wood-deep/5 p-5">
@@ -235,165 +244,85 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
           </div>
         )}
 
-        {/* Billing */}
         <fieldset className="space-y-5" disabled={submitting}>
           <legend className="mb-4 text-[11px] uppercase tracking-[0.22em] text-ink-dim">
             — Datos de contacto y envío
           </legend>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <Field label="Nombre" required>
-              <input
-                required
-                autoComplete="given-name"
-                value={billing.firstName}
-                onChange={(e) => update("firstName", e.target.value)}
-                className={inputCls}
-              />
+              <input required autoComplete="given-name" value={billing.firstName} onChange={(e) => update("firstName", e.target.value)} className={inputCls} />
             </Field>
             <Field label="Apellido" required>
-              <input
-                required
-                autoComplete="family-name"
-                value={billing.lastName}
-                onChange={(e) => update("lastName", e.target.value)}
-                className={inputCls}
-              />
+              <input required autoComplete="family-name" value={billing.lastName} onChange={(e) => update("lastName", e.target.value)} className={inputCls} />
             </Field>
             <Field label="Email" required>
-              <input
-                required
-                type="email"
-                autoComplete="email"
-                inputMode="email"
-                value={billing.email}
-                onChange={(e) => update("email", e.target.value)}
-                className={inputCls}
-                placeholder="nombre@ejemplo.com"
-              />
+              <input required type="email" autoComplete="email" inputMode="email" value={billing.email} onChange={(e) => update("email", e.target.value)} className={inputCls} placeholder="nombre@ejemplo.com" />
             </Field>
             <Field label="Teléfono" required>
-              <input
-                required
-                type="tel"
-                autoComplete="tel"
-                inputMode="tel"
-                value={billing.phone}
-                onChange={(e) => update("phone", e.target.value)}
-                className={inputCls}
-                placeholder="11 1234 5678"
-              />
+              <input required type="tel" autoComplete="tel" inputMode="tel" value={billing.phone} onChange={(e) => update("phone", e.target.value)} className={inputCls} placeholder="11 1234 5678" />
             </Field>
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div className="md:col-span-2">
               <Field label="Dirección" required>
-                <input
-                  required
-                  autoComplete="street-address"
-                  value={billing.address1}
-                  onChange={(e) => update("address1", e.target.value)}
-                  className={inputCls}
-                  placeholder="Calle y número"
-                />
+                <input required autoComplete="street-address" value={billing.address1} onChange={(e) => update("address1", e.target.value)} className={inputCls} placeholder="Calle y número" />
               </Field>
             </div>
             <Field label="Piso/Depto (opcional)">
-              <input
-                autoComplete="address-line2"
-                value={billing.address2}
-                onChange={(e) => update("address2", e.target.value)}
-                className={inputCls}
-              />
+              <input autoComplete="address-line2" value={billing.address2} onChange={(e) => update("address2", e.target.value)} className={inputCls} />
             </Field>
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <Field label="Ciudad" required>
-              <input
-                required
-                autoComplete="address-level2"
-                value={billing.city}
-                onChange={(e) => update("city", e.target.value)}
-                className={inputCls}
-              />
+              <input required autoComplete="address-level2" value={billing.city} onChange={(e) => update("city", e.target.value)} className={inputCls} />
             </Field>
             <Field label="Provincia" required>
-              <input
-                required
-                autoComplete="address-level1"
-                value={billing.state}
-                onChange={(e) => update("state", e.target.value)}
-                className={inputCls}
-              />
+              <input required autoComplete="address-level1" value={billing.state} onChange={(e) => update("state", e.target.value)} className={inputCls} />
             </Field>
             <Field label="Código postal" required>
-              <input
-                required
-                autoComplete="postal-code"
-                inputMode="numeric"
-                value={billing.postcode}
-                onChange={(e) => update("postcode", e.target.value)}
-                className={inputCls}
-              />
+              <input required autoComplete="postal-code" inputMode="numeric" value={billing.postcode} onChange={(e) => update("postcode", e.target.value)} className={inputCls} />
             </Field>
           </div>
 
           <Field label="Notas para el pedido (opcional)">
-            <textarea
-              autoComplete="off"
-              value={billing.notes}
-              onChange={(e) => update("notes", e.target.value)}
-              rows={3}
-              className={`${inputCls} min-h-20 resize-y`}
-              placeholder="Horario de entrega preferido, referencias, etc."
-            />
+            <textarea autoComplete="off" value={billing.notes} onChange={(e) => update("notes", e.target.value)} rows={3} className={`${inputCls} min-h-20 resize-y`} placeholder="Horario de entrega preferido, referencias, etc." />
           </Field>
         </fieldset>
 
-        {/* Payment method */}
-        <fieldset className="space-y-4" disabled={submitting}>
+        {/* Payment method selector */}
+        <fieldset className="space-y-3" disabled={submitting}>
           <legend className="mb-4 text-[11px] uppercase tracking-[0.22em] text-ink-dim">
             — Método de pago
           </legend>
-          <div className="rounded-[var(--r-lg)] border-2 border-ink bg-surface p-6">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-start gap-3">
-                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-bg-deep text-ink">
-                  <Banknote className="h-5 w-5" strokeWidth={1.8} />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <p className="font-display text-lg text-ink">Transferencia bancaria</p>
-                    {bankTransfer.discountLabel && (
-                      <span className="rounded-full border border-moss bg-moss/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-moss">
-                        {bankTransfer.discountLabel}
-                      </span>
-                    )}
-                  </div>
-                  <p className="mt-1 text-sm text-ink-soft">
-                    Creamos el pedido como pendiente. Te mandamos los datos bancarios por
-                    mail y cuando recibimos la transferencia lo confirmamos y te avisamos.
-                  </p>
-                </div>
-              </div>
-              <CircleCheck className="h-5 w-5 shrink-0 text-moss" strokeWidth={2} />
-            </div>
 
+          <PaymentOption
+            selected={paymentMethod === "bacs"}
+            onSelect={() => setPaymentMethod("bacs")}
+            icon={<Banknote className="h-5 w-5" strokeWidth={1.8} />}
+            title="Transferencia bancaria"
+            badge={bankTransfer.discountLabel || undefined}
+            description="Creamos el pedido como pendiente. Te mandamos los datos bancarios por mail y cuando recibimos la transferencia lo confirmamos."
+          >
             {(bankTransfer.bankName || bankTransfer.cbu || bankTransfer.alias) && (
               <dl className="mt-5 grid grid-cols-1 gap-3 rounded-[var(--r)] bg-bg-deep p-4 text-sm md:grid-cols-2">
-                {bankTransfer.bankName && (
-                  <Row dt="Banco" dd={bankTransfer.bankName} />
-                )}
-                {bankTransfer.accountHolder && (
-                  <Row dt="Titular" dd={bankTransfer.accountHolder} />
-                )}
+                {bankTransfer.bankName && <Row dt="Banco" dd={bankTransfer.bankName} />}
+                {bankTransfer.accountHolder && <Row dt="Titular" dd={bankTransfer.accountHolder} />}
                 {bankTransfer.cuit && <Row dt="CUIT" dd={bankTransfer.cuit} />}
                 {bankTransfer.cbu && <Row dt="CBU" dd={bankTransfer.cbu} mono />}
                 {bankTransfer.alias && <Row dt="Alias" dd={bankTransfer.alias} mono />}
               </dl>
             )}
-          </div>
+          </PaymentOption>
+
+          <PaymentOption
+            selected={paymentMethod === "mp"}
+            onSelect={() => setPaymentMethod("mp")}
+            icon={<CreditCard className="h-5 w-5" strokeWidth={1.8} />}
+            title="Mercado Pago"
+            description="Pagá con tarjeta de crédito, débito o saldo de MP. Te llevamos a una pantalla segura y al volver tu pedido queda confirmado automáticamente."
+          />
         </fieldset>
 
         {error && (
@@ -403,7 +332,6 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
         )}
       </div>
 
-      {/* Right column: summary sticky */}
       <aside className="lg:col-span-5">
         <div className="lg:sticky lg:top-28">
           <div className="rounded-[var(--r-lg)] border border-line bg-surface p-7">
@@ -453,11 +381,11 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
               {submitting ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.8} />
-                  Creando pedido…
+                  {paymentMethod === "mp" ? "Preparando pago…" : "Creando pedido…"}
                 </>
               ) : (
                 <>
-                  Confirmar pedido
+                  {paymentMethod === "mp" ? "Ir a pagar" : "Confirmar pedido"}
                   <ArrowRight
                     className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
                     strokeWidth={1.8}
@@ -466,8 +394,9 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
               )}
             </button>
             <p className="mt-3 text-center text-[11px] text-ink-dim">
-              Al confirmar, se crea el pedido en estado pendiente. Podés pagarlo con los
-              datos que te vamos a mandar por mail.
+              {paymentMethod === "mp"
+                ? "Al confirmar te redirigimos a una pantalla segura para pagar."
+                : "Al confirmar, se crea el pedido en estado pendiente."}
             </p>
           </div>
         </div>
@@ -479,15 +408,7 @@ export function CheckoutForm({ bankTransfer }: { bankTransfer: BankTransferDetai
 const inputCls =
   "w-full rounded-[var(--r-sm)] border border-line bg-bg px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-ink"
 
-function Field({
-  label,
-  required,
-  children,
-}: {
-  label: string
-  required?: boolean
-  children: React.ReactNode
-}) {
+function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
     <label className="block">
       <span className="mb-1.5 block text-[11px] uppercase tracking-[0.14em] text-ink-dim">
@@ -505,5 +426,57 @@ function Row({ dt, dd, mono }: { dt: string; dd: string; mono?: boolean }) {
       <dt className="text-[11px] uppercase tracking-[0.14em] text-ink-dim">{dt}</dt>
       <dd className={`text-sm text-ink ${mono ? "font-mono" : ""}`}>{dd}</dd>
     </div>
+  )
+}
+
+function PaymentOption({
+  selected,
+  onSelect,
+  icon,
+  title,
+  badge,
+  description,
+  children,
+}: {
+  selected: boolean
+  onSelect: () => void
+  icon: React.ReactNode
+  title: string
+  badge?: string
+  description: string
+  children?: React.ReactNode
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      aria-pressed={selected}
+      className={`w-full rounded-[var(--r-lg)] border-2 p-6 text-left transition-colors ${
+        selected
+          ? "border-ink bg-surface"
+          : "border-line-soft bg-surface/40 hover:border-line"
+      }`}
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <div className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${selected ? "bg-bg-deep text-ink" : "bg-bg-deep/60 text-ink-soft"}`}>
+            {icon}
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <p className="font-display text-lg text-ink">{title}</p>
+              {badge && (
+                <span className="rounded-full border border-moss bg-moss/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-moss">
+                  {badge}
+                </span>
+              )}
+            </div>
+            <p className="mt-1 text-sm text-ink-soft">{description}</p>
+          </div>
+        </div>
+        {selected && <CircleCheck className="h-5 w-5 shrink-0 text-moss" strokeWidth={2} />}
+      </div>
+      {selected && children}
+    </button>
   )
 }

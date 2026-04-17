@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server"
 import { revalidateTag } from "next/cache"
 import { TAG_PRODUCTS } from "@/lib/woocommerce"
+import { createPreference } from "@/lib/mercadopago"
 
 /**
  * POST /api/orders/create
- * Body: { items: [{productId, quantity}], billing: {...}, paymentMethod: "bacs" }
+ * Body: { items, billing, paymentMethod: "bacs" | "mp" }
  *
- * Creates a WooCommerce order server-side using the admin REST API
- * with consumer key/secret (kept in Vercel env vars, never exposed).
- * For S2 we only support "bacs" (bank transfer) → order status = on-hold.
+ * Crea una orden WC y, si el pago es MP, crea ademas una preference y devuelve el id.
+ * - bacs: status on-hold, esperando transferencia
+ * - mp:   status pending, preference creada; el front redirige a /checkout/pago/:id
  */
 
 type IncomingItem = { productId: number; quantity: number }
@@ -26,10 +27,12 @@ type IncomingBilling = {
   notes?: string
 }
 
+type PaymentMethod = "bacs" | "mp"
+
 type CreateOrderBody = {
   items: IncomingItem[]
   billing: IncomingBilling
-  paymentMethod: "bacs"
+  paymentMethod: PaymentMethod
 }
 
 function isNonEmpty(value: unknown): value is string {
@@ -75,15 +78,32 @@ function validate(body: unknown): { ok: true; data: CreateOrderBody } | { ok: fa
     return { ok: false, error: "Email inválido" }
   }
 
-  if (b.paymentMethod !== "bacs") {
-    return { ok: false, error: "Método de pago no soportado (por ahora)" }
+  if (b.paymentMethod !== "bacs" && b.paymentMethod !== "mp") {
+    return { ok: false, error: "Método de pago no soportado" }
   }
 
   return { ok: true, data: b as CreateOrderBody }
 }
 
+type WCOrderLineItem = {
+  id: number
+  product_id: number
+  name: string
+  quantity: number
+  price: string | number
+  image?: { src?: string } | null
+}
+
+type WCOrderResponse = {
+  id: number
+  number: string
+  total: string
+  status: string
+  line_items: WCOrderLineItem[]
+}
+
 export async function POST(req: Request) {
-  const { WC_URL, WC_CONSUMER_KEY, WC_CONSUMER_SECRET } = process.env
+  const { WC_URL, WC_CONSUMER_KEY, WC_CONSUMER_SECRET, NEXT_PUBLIC_APP_URL } = process.env
   if (!WC_URL || !WC_CONSUMER_KEY || !WC_CONSUMER_SECRET) {
     return NextResponse.json(
       { error: "Servidor sin credenciales WC" },
@@ -104,15 +124,15 @@ export async function POST(req: Request) {
   }
 
   const { items, billing, paymentMethod } = result.data
+  const isMp = paymentMethod === "mp"
 
   const auth = Buffer.from(`${WC_CONSUMER_KEY}:${WC_CONSUMER_SECRET}`).toString("base64")
-  const paymentTitle =
-    paymentMethod === "bacs" ? "Transferencia bancaria" : paymentMethod
+  const paymentTitle = isMp ? "Mercado Pago" : "Transferencia bancaria"
   const orderPayload = {
-    payment_method: paymentMethod,
+    payment_method: isMp ? "mercadopago" : "bacs",
     payment_method_title: paymentTitle,
     set_paid: false,
-    status: "on-hold",
+    status: isMp ? "pending" : "on-hold",
     billing: {
       first_name: billing.firstName,
       last_name: billing.lastName,
@@ -167,18 +187,61 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: msg }, { status: res.status })
   }
 
-  const order = payload as { id: number; number: string; total: string; status: string }
+  const order = payload as WCOrderResponse
 
-  // Al crear una orden WC reserva stock (cambia stock_quantity de los productos).
-  // Invalidamos el cache del catalogo para que la proxima pagina muestre el stock
-  // actualizado en vez del cacheado de hasta 30s atras.
-  // Nota: en Next 16 revalidateTag toma un profile de cacheLife como 2do arg.
+  // Stock reservado → invalidamos cache del catalogo
   revalidateTag(TAG_PRODUCTS, "default")
 
-  return NextResponse.json({
-    id: order.id,
-    number: order.number,
-    total: order.total,
-    status: order.status,
-  })
+  if (!isMp) {
+    return NextResponse.json({
+      id: order.id,
+      number: order.number,
+      total: order.total,
+      status: order.status,
+      paymentMethod: "bacs",
+    })
+  }
+
+  // MP: creamos preference usando los line_items tal como los guardo WC
+  // (con nombres y precios ya resueltos, para evitar mismatch).
+  try {
+    const appUrl = NEXT_PUBLIC_APP_URL || new URL(req.url).origin
+    const mpItems = order.line_items.map((li) => ({
+      id: String(li.product_id),
+      title: li.name,
+      quantity: li.quantity,
+      unit_price: Number(li.price),
+      picture_url: li.image?.src ?? null,
+    }))
+    const preference = await createPreference({
+      orderId: order.id,
+      items: mpItems,
+      payer: {
+        name: billing.firstName,
+        surname: billing.lastName,
+        email: billing.email,
+        phone: billing.phone,
+      },
+      appUrl,
+    })
+
+    return NextResponse.json({
+      id: order.id,
+      number: order.number,
+      total: order.total,
+      status: order.status,
+      paymentMethod: "mp",
+      preferenceId: preference.id,
+    })
+  } catch (err) {
+    // Si falla MP, la orden WC ya existe — la dejamos pending y mostramos error
+    const msg = err instanceof Error ? err.message : "Error creando pago MP"
+    return NextResponse.json(
+      {
+        error: `La orden se creó pero no pudimos iniciar el pago: ${msg}`,
+        orderId: order.id,
+      },
+      { status: 502 },
+    )
+  }
 }

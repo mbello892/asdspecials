@@ -16,6 +16,7 @@
     "harden:db": "node scripts/harden-supabase.mjs"
   },
   "dependencies": {
+    "@mercadopago/sdk-react": "^1.0.7",
     "@payloadcms/db-postgres": "^3.82.1",
     "@payloadcms/live-preview": "^3.82.1",
     "@payloadcms/live-preview-react": "^3.82.1",
@@ -29,6 +30,7 @@
     "clsx": "latest",
     "graphql": "^16.13.2",
     "lucide-react": "latest",
+    "mercadopago": "^2.12.0",
     "next": "latest",
     "payload": "^3.82.1",
     "react": "latest",
