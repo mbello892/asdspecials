@@ -9,7 +9,7 @@ import { getCategories, getProducts, type SortOption } from "@/lib/woocommerce"
 export const dynamic = "force-dynamic"
 
 export const metadata = {
-  title: "Catálogo — ASD Specials",
+  title: "Catálogo — asd specials",
 }
 
 const VALID_SORTS: SortOption[] = ["recent", "price-asc", "price-desc", "title-asc", "title-desc"]

@@ -2,7 +2,7 @@ export default function DashboardPage() {
   return (
     <div>
       <h1>Dashboard</h1>
-      <p>Welcome to your ASD Specials dashboard.</p>
+      <p>Welcome to your asd specials dashboard.</p>
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Inter, Fraunces } from "next/font/google"
+import { Inter, Special_Elite } from "next/font/google"
 import "./globals.css"
 
 const inter = Inter({
@@ -8,16 +8,15 @@ const inter = Inter({
   display: "swap",
 })
 
-const fraunces = Fraunces({
+const specialElite = Special_Elite({
   subsets: ["latin"],
-  variable: "--font-fraunces",
+  variable: "--font-special-elite",
+  weight: "400",
   display: "swap",
-  style: ["normal", "italic"],
-  axes: ["SOFT", "WONK", "opsz"],
 })
 
 export const metadata: Metadata = {
-  title: "ASD Specials — Plantas y macetas de aluminio",
+  title: "asd specials — Plantas y macetas de aluminio",
   description:
     "Plantas de interior seleccionadas a mano y macetas de aluminio cepillado hechas para durar. Envío cuidado a todo el país.",
 }
@@ -28,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es" className={`${inter.variable} ${fraunces.variable}`}>
+    <html lang="es" className={`${inter.variable} ${specialElite.variable}`}>
       <body className="min-h-screen antialiased">{children}</body>
     </html>
   )
