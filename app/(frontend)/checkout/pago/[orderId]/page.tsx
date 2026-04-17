@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, ShieldCheck } from "lucide-react"
-import { MPBrick } from "@/components/checkout/MPBrick"
+import { ArrowLeft, ShieldCheck, Lock } from "lucide-react"
+import { PaymentPanel } from "@/components/checkout/PaymentPanel"
 import { formatPrice } from "@/lib/format"
 
 type WCOrder = {
@@ -82,23 +82,35 @@ export default async function PagoPage({
         <section className="lg:col-span-7">
           <div className="rounded-[var(--r-lg)] border border-line bg-surface p-7">
             <div className="mb-6 flex items-start gap-3">
-              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-bg-deep text-ink">
+              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-moss/40 bg-moss/10 text-moss">
                 <ShieldCheck className="h-5 w-5" strokeWidth={1.8} />
               </div>
               <div>
-                <p className="font-display text-lg text-ink">Pago seguro con Mercado Pago</p>
-                <p className="mt-1 text-sm text-ink-soft">
-                  Al confirmar se abre la pasarela de Mercado Pago. Cuando volvés, tu pedido
-                  queda actualizado automáticamente.
+                <p className="font-display text-lg text-ink">Elegí cómo querés pagar</p>
+                <p className="mt-1 text-sm leading-6 text-ink-soft">
+                  Ingresá la tarjeta en el sitio o pagá con tu cuenta de Mercado Pago.
+                  Tus datos viajan cifrados y nunca se guardan en nuestros servidores.
                 </p>
               </div>
             </div>
 
-            <MPBrick publicKey={publicKey} preferenceId={pref} />
+            <PaymentPanel
+              publicKey={publicKey}
+              preferenceId={pref}
+              orderId={order.id}
+              amount={Number(order.total)}
+              payerEmail={order.billing.email ?? ""}
+            />
 
-            <p className="mt-5 text-center text-[11px] text-ink-dim">
-              Aceptamos tarjetas de crédito, débito y saldo en cuenta.
-            </p>
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-line-soft pt-5">
+              <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] text-ink-dim">
+                <Lock className="h-3 w-3" strokeWidth={2} />
+                Pago cifrado — SSL
+              </div>
+              <p className="text-[11px] tracking-[0.12em] text-ink-dim">
+                Visa · Mastercard · Amex · Naranja · Cabal
+              </p>
+            </div>
           </div>
         </section>
 

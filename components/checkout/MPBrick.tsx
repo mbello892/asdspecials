@@ -1,9 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { initMercadoPago, Wallet } from "@mercadopago/sdk-react"
-
-let initialized = false
+import { Wallet } from "@mercadopago/sdk-react"
+import { ensureMPInit } from "@/lib/mpInit"
 
 export function MPBrick({
   publicKey,
@@ -15,10 +14,7 @@ export function MPBrick({
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    if (!initialized) {
-      initMercadoPago(publicKey, { locale: "es-AR" })
-      initialized = true
-    }
+    ensureMPInit(publicKey)
     setReady(true)
   }, [publicKey])
 
