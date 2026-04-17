@@ -1,12 +1,17 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { X, ChevronLeft, ChevronRight, ZoomIn } from "lucide-react"
 
 type Props = {
   images: string[]
   name: string
 }
+
+// Mínimo desplazamiento horizontal (px) y máximo vertical para contar como swipe.
+// Evita que un scroll vertical del detalle del producto dispare navegación.
+const SWIPE_MIN_X = 50
+const SWIPE_MAX_Y = 60
 
 export function ProductGallery({ images, name }: Props) {
   const [active, setActive] = useState(0)
@@ -20,6 +25,24 @@ export function ProductGallery({ images, name }: Props) {
     () => setActive((i) => (i + 1) % images.length),
     [images.length],
   )
+
+  const touchStart = useRef<{ x: number; y: number } | null>(null)
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0]
+    touchStart.current = { x: t.clientX, y: t.clientY }
+  }
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const start = touchStart.current
+    touchStart.current = null
+    if (!start || images.length <= 1) return
+    const t = e.changedTouches[0]
+    const dx = t.clientX - start.x
+    const dy = t.clientY - start.y
+    if (Math.abs(dx) < SWIPE_MIN_X) return
+    if (Math.abs(dy) > SWIPE_MAX_Y) return
+    if (dx > 0) prev()
+    else next()
+  }
 
   useEffect(() => {
     if (!lightbox) return
@@ -43,8 +66,10 @@ export function ProductGallery({ images, name }: Props) {
     <>
       {/* Imagen principal */}
       <div
-        className="relative aspect-[4/5] cursor-zoom-in overflow-hidden rounded-[var(--r-lg)] bg-bg-deep"
+        className="relative aspect-[4/5] cursor-zoom-in overflow-hidden rounded-[var(--r-lg)] bg-bg-deep touch-pan-y"
         onClick={() => setLightbox(true)}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
       >
         <img
           src={images[active]}
@@ -144,8 +169,10 @@ export function ProductGallery({ images, name }: Props) {
           )}
 
           <div
-            className="relative max-h-[90vh] max-w-[90vw]"
+            className="relative max-h-[90vh] max-w-[90vw] touch-pan-y"
             onClick={(e) => e.stopPropagation()}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
           >
             <img
               src={images[active]}
