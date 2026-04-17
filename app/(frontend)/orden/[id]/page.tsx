@@ -52,6 +52,36 @@ export default async function OrderPage({ params }: Params) {
 
   const bank = content.bankTransfer ?? {}
   const isBacs = order.paymentMethod === "bacs"
+  const paidStatuses = ["processing", "completed"]
+  const isPaid = paidStatuses.includes(order.status)
+  const isFailed = ["failed", "cancelled"].includes(order.status)
+
+  const intro = isBacs ? (
+    <>
+      Recibimos tu pedido y lo guardamos como{" "}
+      <span className="text-ink">pendiente de pago</span>. En breve vas a recibir un
+      mail a <span className="text-ink">{order.billing.email}</span> con los datos
+      bancarios y los próximos pasos.
+    </>
+  ) : isPaid ? (
+    <>
+      Tu pago se acreditó vía <span className="text-ink">Mercado Pago</span>. Te
+      mandamos un mail de confirmación a{" "}
+      <span className="text-ink">{order.billing.email}</span> y te avisamos cuando
+      despachemos el pedido.
+    </>
+  ) : isFailed ? (
+    <>
+      El pago no se pudo completar. Podés reintentar desde tu carrito o escribirnos
+      y lo resolvemos.
+    </>
+  ) : (
+    <>
+      Estamos confirmando tu pago con{" "}
+      <span className="text-ink">Mercado Pago</span>. En cuanto tengamos novedades te
+      avisamos por mail a <span className="text-ink">{order.billing.email}</span>.
+    </>
+  )
 
   return (
     <main className="relative">
@@ -84,13 +114,7 @@ export default async function OrderPage({ params }: Params) {
                 <div className="mt-3">
                   <StatusBadge status={order.status} />
                 </div>
-                <p className="mt-4 text-sm leading-6 text-ink-soft">
-                  Recibimos tu pedido y lo guardamos como{" "}
-                  <span className="text-ink">pendiente de pago</span>. En breve vas a
-                  recibir un mail a{" "}
-                  <span className="text-ink">{order.billing.email}</span> con los datos
-                  bancarios y los próximos pasos.
-                </p>
+                <p className="mt-4 text-sm leading-6 text-ink-soft">{intro}</p>
               </div>
             </div>
           </div>
