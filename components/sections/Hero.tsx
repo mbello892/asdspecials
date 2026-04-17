@@ -101,7 +101,7 @@ export function Hero({ data }: { data?: HeroData }) {
             {eyebrow}
           </div>
 
-          <h1 className="font-display text-[clamp(3rem,1.5rem+5.2vw,6.5rem)] font-normal leading-[0.92] tracking-tightest text-ink">
+          <h1 className="font-display text-[clamp(2.2rem,1rem+3.5vw,4.5rem)] font-normal leading-[1.05] tracking-tight text-ink">
             {formatHeadline(headline)}
           </h1>
 
