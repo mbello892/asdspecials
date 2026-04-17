@@ -5,8 +5,8 @@ import type { Product } from "@/types/shop"
 import { Navbar } from "@/components/sections/Navbar"
 import { Footer } from "@/components/sections/Footer"
 import { AddToCartButton } from "@/components/shop/AddToCartButton"
+import { ProductGallery } from "@/components/shop/ProductGallery"
 import { getProductBySlug } from "@/lib/woocommerce"
-import { formatPrice } from "@/lib/format"
 
 export const dynamic = "force-dynamic"
 
@@ -37,9 +37,9 @@ type Params = { params: Promise<{ slug: string }> }
 export async function generateMetadata({ params }: Params) {
   const { slug } = await params
   const product = await getProductBySlug(slug)
-  if (!product) return { title: "Producto no encontrado — ASD Specials" }
+  if (!product) return { title: "Producto no encontrado — asd specials" }
   return {
-    title: `${product.name} — ASD Specials`,
+    title: `${product.name} — asd specials`,
     description: product.shortDescription || undefined,
   }
 }
@@ -83,29 +83,7 @@ export default async function ProductPage({ params }: Params) {
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
             {/* Galería */}
             <div className="lg:col-span-7">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[var(--r-lg)] bg-bg-deep">
-                <img
-                  src={images[0]}
-                  alt={product.name}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              {images.length > 1 && (
-                <div className="mt-4 grid grid-cols-4 gap-3">
-                  {images.slice(1, 5).map((url, i) => (
-                    <div
-                      key={i}
-                      className="relative aspect-square overflow-hidden rounded-[var(--r-sm)] bg-bg-deep"
-                    >
-                      <img
-                        src={url}
-                        alt={`${product.name} ${i + 2}`}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
+              <ProductGallery images={images} name={product.name} />
             </div>
 
             {/* Info + CTA */}
@@ -178,11 +156,12 @@ export default async function ProductPage({ params }: Params) {
                   {product.compareAtPrice &&
                     product.compareAtPrice > product.price && (
                       <p className="text-sm text-ink-dim line-through">
-                        {formatPrice(product.compareAtPrice)}
+                        $ {new Intl.NumberFormat("es-AR").format(product.compareAtPrice)}
                       </p>
                     )}
-                  <p className="mt-1 font-display text-3xl text-ink">
-                    {formatPrice(product.price)}
+                  <p className="mt-1 font-display text-3xl leading-none text-ink">
+                    <span className="mr-0.5 align-super text-base font-normal opacity-60">$</span>
+                    {new Intl.NumberFormat("es-AR").format(product.price)}
                   </p>
                   <p className="mt-1 text-xs text-ink-dim">
                     {soldOut
