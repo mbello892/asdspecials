@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Inter, Special_Elite } from "next/font/google"
+import { Inter, Cormorant_Garamond } from "next/font/google"
 import "./globals.css"
 
 const inter = Inter({
@@ -8,10 +8,11 @@ const inter = Inter({
   display: "swap",
 })
 
-const specialElite = Special_Elite({
+const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
-  variable: "--font-special-elite",
-  weight: "400",
+  variable: "--font-cormorant",
+  weight: ["300", "400", "500", "600"],
+  style: ["normal", "italic"],
   display: "swap",
 })
 
@@ -27,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es" className={`${inter.variable} ${specialElite.variable}`}>
+    <html lang="es" className={`${inter.variable} ${cormorant.variable}`}>
       <body className="min-h-screen antialiased">{children}</body>
     </html>
   )
