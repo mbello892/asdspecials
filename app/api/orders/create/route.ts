@@ -206,7 +206,33 @@ export async function POST(req: Request) {
   // (con nombres y precios ya resueltos, para evitar mismatch).
   try {
     const appUrl = NEXT_PUBLIC_APP_URL || new URL(req.url).origin
-    const mpItems = order.line_items.map((li) => ({
+
+    // Defensa: algunos plugins de WP mutilan la respuesta del POST /orders
+    // devolviendo 200 sin line_items. En ese caso re-fetcheamos la orden por
+    // ID, que siempre trae el detalle completo.
+    let lineItems = order.line_items
+    if (!Array.isArray(lineItems) || lineItems.length === 0) {
+      console.error("[orders/create] WC POST sin line_items — re-fetch", {
+        orderId: order.id,
+        keys: payload && typeof payload === "object" ? Object.keys(payload) : [],
+      })
+      const getRes = await fetch(
+        `${WC_URL.replace(/\/$/, "")}/wp-json/wc/v3/orders/${order.id}`,
+        {
+          headers: { Authorization: `Basic ${auth}` },
+          cache: "no-store",
+        },
+      )
+      if (getRes.ok) {
+        const fresh = (await getRes.json()) as WCOrderResponse
+        lineItems = fresh.line_items
+      }
+    }
+    if (!Array.isArray(lineItems) || lineItems.length === 0) {
+      throw new Error("La orden quedó sin items en WC (revisá el plugin)")
+    }
+
+    const mpItems = lineItems.map((li) => ({
       id: String(li.product_id),
       title: li.name,
       quantity: li.quantity,
